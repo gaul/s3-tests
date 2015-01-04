@@ -622,6 +622,7 @@ def test_bucket_listv2_delimiter_none():
     assert prefixes == []
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_fetchowner_notempty():
     key_names = ['foo/bar', 'foo/baz', 'quux']
     bucket_name = _create_objects(keys=key_names)
@@ -632,6 +633,7 @@ def test_bucket_listv2_fetchowner_notempty():
     assert 'Owner' in objs_list[0]
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_fetchowner_defaultempty():
     key_names = ['foo/bar', 'foo/baz', 'quux']
     bucket_name = _create_objects(keys=key_names)
@@ -642,6 +644,7 @@ def test_bucket_listv2_fetchowner_defaultempty():
     assert not 'Owner' in objs_list[0]
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_fetchowner_empty():
     key_names = ['foo/bar', 'foo/baz', 'quux']
     bucket_name = _create_objects(keys=key_names)
@@ -833,6 +836,7 @@ def test_bucket_listv2_prefix_not_exist():
     assert keys == []
     assert prefixes == []
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_list_prefix_unreadable():
     key_names = ['foo/bar', 'foo/baz', 'quux']
     bucket_name = _create_objects(keys=key_names)
@@ -1094,8 +1098,10 @@ def parseXmlToJson(xml):
 
   return response
 
-@pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+# TODO: should all fails_on_aws be fails_on_s3proxy?
+@pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_account_usage():
     # boto3.set_stream_logger(name='botocore')
     client = get_client()
@@ -1116,6 +1122,7 @@ def test_account_usage():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_head_bucket_usage():
     client = get_client()
     bucket_name = _create_objects(keys=['foo'])
@@ -1167,6 +1174,7 @@ def test_head_bucket_usage_multipart_incomplete():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_list_unordered():
     # boto3.set_stream_logger(name='botocore')
     keys_in = ['ado', 'bot', 'cob', 'dog', 'emu', 'fez', 'gnu', 'hex',
@@ -1221,6 +1229,7 @@ def test_bucket_list_unordered():
 @pytest.mark.fails_on_aws
 @pytest.mark.list_objects_v2
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_unordered():
     # boto3.set_stream_logger(name='botocore')
     keys_in = ['ado', 'bot', 'cob', 'dog', 'emu', 'fez', 'gnu', 'hex',
@@ -1409,6 +1418,7 @@ def test_bucket_listv2_continuationtoken():
 
 @pytest.mark.list_objects_v2
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_both_continuationtoken_startafter():
     key_names = ['bar', 'baz', 'foo', 'quxx']
     bucket_name = _create_objects(keys=key_names)
@@ -1701,6 +1711,7 @@ def test_object_write_to_nonexist_bucket():
 def _ev_add_te_header(request, **kwargs):
     request.headers.add_header('Transfer-Encoding', 'chunked')
 
+@pytest.mark.fails_on_s3proxy
 def test_object_write_with_chunked_transfer_encoding():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1995,6 +2006,7 @@ def test_object_set_get_metadata_overwrite_to_empty():
 
 # TODO: the decoding of this unicode metadata is not happening properly for unknown reasons
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_object_set_get_unicode_metadata():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2053,6 +2065,7 @@ def _get_post_url(bucket_name):
     endpoint = get_config_endpoint()
     return '{endpoint}/{bucket_name}'.format(endpoint=endpoint, bucket_name=bucket_name)
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_anonymous_request():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2177,6 +2190,7 @@ def test_post_object_authenticated_request_bad_access_key():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_set_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2192,6 +2206,7 @@ def test_post_object_set_success_code():
     message = ET.fromstring(r.content).find('Key')
     assert message.text == 'foo.txt'
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_set_invalid_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2246,6 +2261,7 @@ def test_post_object_upload_larger_than_chunk():
     body = _get_body(response)
     assert body == foo_string
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_set_key_from_filename():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2387,6 +2403,7 @@ def test_post_object_escaped_field_values():
     body = _get_body(response)
     assert body == 'bar'
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_success_redirect_action():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2495,6 +2512,7 @@ def test_post_object_invalid_access_key():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_invalid_date_format():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2560,6 +2578,7 @@ def test_post_object_no_key_specified():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_signature():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2593,6 +2612,7 @@ def test_post_object_missing_signature():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_policy_condition():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2625,6 +2645,7 @@ def test_post_object_missing_policy_condition():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_user_specified_header():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2661,6 +2682,7 @@ def test_post_object_user_specified_header():
     response = client.get_object(Bucket=bucket_name, Key='foo.txt')
     assert response['Metadata']['foo'] == 'barclamp'
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_request_missing_policy_specified_field():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2695,6 +2717,7 @@ def test_post_object_request_missing_policy_specified_field():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_condition_is_case_sensitive():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2728,6 +2751,7 @@ def test_post_object_condition_is_case_sensitive():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_expires_is_case_sensitive():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2761,6 +2785,7 @@ def test_post_object_expires_is_case_sensitive():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_expired_policy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2794,6 +2819,7 @@ def test_post_object_expired_policy():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_wrong_bucket():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2830,6 +2856,7 @@ def test_post_object_wrong_bucket():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_invalid_request_field_value():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2863,6 +2890,7 @@ def test_post_object_invalid_request_field_value():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_expires_condition():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2896,6 +2924,7 @@ def test_post_object_missing_expires_condition():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_conditions_list():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2921,6 +2950,7 @@ def test_post_object_missing_conditions_list():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_upload_size_limit_exceeded():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2954,6 +2984,7 @@ def test_post_object_upload_size_limit_exceeded():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_content_length_argument():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2987,6 +3018,7 @@ def test_post_object_missing_content_length_argument():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_invalid_content_length_argument():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3020,6 +3052,7 @@ def test_post_object_invalid_content_length_argument():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_upload_size_below_minimum():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3100,6 +3133,7 @@ def test_post_object_upload_size_rgw_chunk_size_bug():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 204
 
+@pytest.mark.fails_on_s3proxy
 def test_post_object_empty_conditions():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3149,6 +3183,7 @@ def test_get_object_ifmatch_failed():
     assert status == 412
     assert error_code == 'PreconditionFailed'
 
+@pytest.mark.fails_on_s3proxy  # remove when upgrading to jclouds 2.7.0
 def test_get_object_ifnonematch_good():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3180,6 +3215,7 @@ def test_get_object_ifmodifiedsince_good():
     assert body == 'bar'
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy  # remove when upgrading to jclouds 2.7.0
 def test_get_object_ifmodifiedsince_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3203,6 +3239,7 @@ def test_get_object_ifmodifiedsince_failed():
     assert e.response['ResponseMetadata']['HTTPHeaders']['etag'] == etag
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_get_object_ifunmodifiedsince_good():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3245,6 +3282,7 @@ def test_put_object_ifmatch_good():
     assert body == 'zar'
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_put_object_ifmatch_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3285,6 +3323,7 @@ def test_put_object_ifmatch_overwrite_existed_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_put_object_ifmatch_nonexisted_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3320,6 +3359,7 @@ def test_put_object_ifnonmatch_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_put_object_ifnonmatch_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3358,6 +3398,7 @@ def test_put_object_ifnonmatch_nonexisted_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_put_object_ifnonmatch_overwrite_existed_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3423,6 +3464,7 @@ def test_object_raw_get_bucket_gone():
     assert status == 404
     assert error_code == 'NoSuchBucket'
 
+@pytest.mark.fails_on_s3proxy
 def test_object_delete_key_bucket_gone():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3434,6 +3476,7 @@ def test_object_delete_key_bucket_gone():
 
     e = assert_raises(ClientError, unauthenticated_client.delete_object, Bucket=bucket_name, Key='foo')
     status, error_code = _get_status_and_error_code(e.response)
+    # TODO: S3Proxy returns 403 here
     assert status == 404
     assert error_code == 'NoSuchBucket'
 
@@ -3472,6 +3515,7 @@ def test_bucket_head_notexist():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_head_extended():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3507,6 +3551,7 @@ def test_object_raw_get_object_acl():
     assert error_code == 'AccessDenied'
 
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy
 def test_object_put_acl_mtime():
     key = 'foo'
     bucket_name = get_new_bucket()
@@ -3691,6 +3736,7 @@ def test_object_anon_put():
     assert status == 403
     assert error_code == 'AccessDenied'
 
+@pytest.mark.fails_on_s3proxy
 def test_object_anon_put_write_access():
     bucket_name = _setup_bucket_acl('public-read-write')
     client = get_client()
@@ -3889,6 +3935,7 @@ def test_bucket_create_naming_bad_ip():
 
 # test_bucket_create_naming_dns_* are valid but not recommended
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 # Should now pass on AWS even though it has 'fails_on_aws' attr.
 def test_bucket_create_naming_dns_underscore():
     invalid_bucketname = 'foo_bar'
@@ -3907,6 +3954,7 @@ def test_bucket_create_naming_dns_long():
 # Breaks DNS with SubdomainCallingFormat
 @pytest.mark.fails_on_aws
 # Should now pass on AWS even though it has 'fails_on_aws' attr.
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_naming_dns_dash_at_end():
     invalid_bucketname = 'foo-'
     status, error_code = check_invalid_bucketname(invalid_bucketname)
@@ -3917,6 +3965,7 @@ def test_bucket_create_naming_dns_dash_at_end():
 # Breaks DNS with SubdomainCallingFormat
 @pytest.mark.fails_on_aws
 # Should now pass on AWS even though it has 'fails_on_aws' attr.
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_naming_dns_dot_dot():
     invalid_bucketname = 'foo..bar'
     status, error_code = check_invalid_bucketname(invalid_bucketname)
@@ -3927,6 +3976,7 @@ def test_bucket_create_naming_dns_dot_dot():
 # Breaks DNS with SubdomainCallingFormat
 @pytest.mark.fails_on_aws
 # Should now pass on AWS even though it has 'fails_on_aws' attr.
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_naming_dns_dot_dash():
     invalid_bucketname = 'foo.-bar'
     status, error_code = check_invalid_bucketname(invalid_bucketname)
@@ -3937,12 +3987,14 @@ def test_bucket_create_naming_dns_dot_dash():
 # Breaks DNS with SubdomainCallingFormat
 @pytest.mark.fails_on_aws
 # Should now pass on AWS even though it has 'fails_on_aws' attr.
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_naming_dns_dash_dot():
     invalid_bucketname = 'foo-.bar'
     status, error_code = check_invalid_bucketname(invalid_bucketname)
     assert status == 400
     assert error_code == 'InvalidBucketName'
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_exists():
     # aws-s3 default region allows recreation of buckets
     # but all other regions fail with BucketAlreadyOwnedByYou.
@@ -3973,6 +4025,7 @@ def test_bucket_get_location():
     assert response['LocationConstraint'] == location_constraint
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_exists_nonowner():
     # Names are shared across a global namespace. As such, no two
     # users can create a bucket with that same name.
@@ -3988,6 +4041,7 @@ def test_bucket_create_exists_nonowner():
     assert error_code == 'BucketAlreadyExists'
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_recreate_overwrite_acl():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -3999,6 +4053,7 @@ def test_bucket_recreate_overwrite_acl():
     assert error_code == 'BucketAlreadyExists'
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_recreate_new_acl():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4043,6 +4098,7 @@ def check_grants(got, want):
         assert g == {'Grantee': {}}
 
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_default():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4071,6 +4127,7 @@ def test_bucket_acl_default():
         )
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_canned_during_create():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4103,6 +4160,7 @@ def test_bucket_acl_canned_during_create():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_canned():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4153,6 +4211,7 @@ def test_bucket_acl_canned():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_canned_publicreadwrite():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4192,6 +4251,7 @@ def test_bucket_acl_canned_publicreadwrite():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_canned_authenticatedread():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4259,6 +4319,7 @@ def test_put_bucket_acl_grant_group_read():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_default():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4285,6 +4346,7 @@ def test_object_acl_default():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_canned_during_create():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4319,6 +4381,7 @@ def test_object_acl_canned_during_create():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_canned():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4372,6 +4435,7 @@ def test_object_acl_canned():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_canned_publicreadwrite():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4413,6 +4477,7 @@ def test_object_acl_canned_publicreadwrite():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_canned_authenticatedread():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4446,6 +4511,7 @@ def test_object_acl_canned_authenticatedread():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_canned_bucketownerread():
     bucket_name = get_new_bucket_name()
     main_client = get_client()
@@ -4488,6 +4554,7 @@ def test_object_acl_canned_bucketownerread():
             ],
         )
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_canned_bucketownerfullcontrol():
     bucket_name = get_new_bucket_name()
     main_client = get_client()
@@ -4531,6 +4598,7 @@ def test_object_acl_canned_bucketownerfullcontrol():
         )
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_full_control_verify_owner():
     bucket_name = get_new_bucket_name()
     main_client = get_client()
@@ -4579,6 +4647,7 @@ def add_obj_user_grant(bucket_name, key, grant):
 
     return grant
 
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_full_control_verify_attributes():
     bucket_name = get_new_bucket_name()
     main_client = get_client()
@@ -4678,24 +4747,29 @@ def _check_object_acl(permission):
 
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_object_acl():
     _check_object_acl('FULL_CONTROL')
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_write():
     _check_object_acl('WRITE')
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_writeacp():
     _check_object_acl('WRITE_ACP')
 
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_read():
     _check_object_acl('READ')
 
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_object_acl_readacp():
     _check_object_acl('READ_ACP')
 
@@ -4805,6 +4879,7 @@ def _check_bucket_acl_grant_cant_writeacp(bucket_name):
     check_access_denied(alt_client.put_bucket_acl,Bucket=bucket_name, ACL='public-read')
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_userid_fullcontrol():
     bucket_name = _bucket_acl_grant_userid('FULL_CONTROL')
 
@@ -4830,6 +4905,7 @@ def test_bucket_acl_grant_userid_fullcontrol():
     assert owner_display_name == main_display_name
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_userid_read():
     bucket_name = _bucket_acl_grant_userid('READ')
 
@@ -4843,6 +4919,7 @@ def test_bucket_acl_grant_userid_read():
     _check_bucket_acl_grant_cant_writeacp(bucket_name)
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_userid_readacp():
     bucket_name = _bucket_acl_grant_userid('READ_ACP')
 
@@ -4857,6 +4934,7 @@ def test_bucket_acl_grant_userid_readacp():
     _check_bucket_acl_grant_cant_writeacp(bucket_name)
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_userid_write():
     bucket_name = _bucket_acl_grant_userid('WRITE')
 
@@ -4870,6 +4948,7 @@ def test_bucket_acl_grant_userid_write():
     _check_bucket_acl_grant_cant_writeacp(bucket_name)
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_userid_writeacp():
     bucket_name = _bucket_acl_grant_userid('WRITE_ACP')
 
@@ -4882,6 +4961,7 @@ def test_bucket_acl_grant_userid_writeacp():
     # can write acl
     _check_bucket_acl_grant_can_writeacp(bucket_name)
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_nonexist_user():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4919,6 +4999,7 @@ def _get_acl_header(user_id=None, perms=None):
 
 @pytest.mark.fails_on_dho
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_object_header_acl_grants():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4987,6 +5068,7 @@ def test_object_header_acl_grants():
 
 @pytest.mark.fails_on_dho
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_header_acl_grants():
     headers = _get_acl_header()
     bucket_name = get_new_bucket_name()
@@ -5066,6 +5148,7 @@ def test_bucket_header_acl_grants():
 # would violate the uniqueness requirement of a user's email. As such, DHO users are
 # created without an email.
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_email():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -5108,6 +5191,7 @@ def test_bucket_acl_grant_email():
         ]
     )
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_grant_email_not_exist():
     # behavior not documented by amazon
     bucket_name = get_new_bucket()
@@ -5127,6 +5211,7 @@ def test_bucket_acl_grant_email_not_exist():
     assert status == 400
     assert error_code == 'UnresolvableGrantByEmailAddress'
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_revoke_all():
     # revoke all access, including the owner's access
     bucket_name = get_new_bucket()
@@ -5193,6 +5278,7 @@ def list_bucket_versions(client, bucket_name):
 
     return result
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_private_object_private():
     # all the test_access_* tests follow this template
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='private', object_acl='private')
@@ -5221,6 +5307,7 @@ def test_access_bucket_private_object_private():
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_private_objectv2_private():
     # all the test_access_* tests follow this template
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='private', object_acl='private')
@@ -5248,6 +5335,7 @@ def test_access_bucket_private_objectv2_private():
     alt_client3 = get_alt_client()
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_private_object_publicread():
 
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='private', object_acl='public-read')
@@ -5269,6 +5357,7 @@ def test_access_bucket_private_object_publicread():
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_private_objectv2_publicread():
 
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='private', object_acl='public-read')
@@ -5289,6 +5378,7 @@ def test_access_bucket_private_objectv2_publicread():
     check_access_denied(alt_client3.list_objects_v2, Bucket=bucket_name)
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_private_object_publicreadwrite():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='private', object_acl='public-read-write')
     alt_client = get_alt_client()
@@ -5310,6 +5400,7 @@ def test_access_bucket_private_object_publicreadwrite():
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_private_objectv2_publicreadwrite():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='private', object_acl='public-read-write')
     alt_client = get_alt_client()
@@ -5330,6 +5421,7 @@ def test_access_bucket_private_objectv2_publicreadwrite():
     check_access_denied(alt_client3.list_objects_v2, Bucket=bucket_name)
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_publicread_object_private():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='public-read', object_acl='private')
     alt_client = get_alt_client()
@@ -5349,6 +5441,7 @@ def test_access_bucket_publicread_object_private():
     assert objs == ['bar', 'foo']
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_publicread_object_publicread():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='public-read', object_acl='public-read')
     alt_client = get_alt_client()
@@ -5373,6 +5466,7 @@ def test_access_bucket_publicread_object_publicread():
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_publicread_object_publicreadwrite():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='public-read', object_acl='public-read-write')
     alt_client = get_alt_client()
@@ -5399,6 +5493,7 @@ def test_access_bucket_publicread_object_publicreadwrite():
     check_access_denied(alt_client3.put_object, Bucket=bucket_name, Key=newkey, Body='newcontent')
 
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_publicreadwrite_object_private():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='public-read-write', object_acl='private')
     alt_client = get_alt_client()
@@ -5414,6 +5509,7 @@ def test_access_bucket_publicreadwrite_object_private():
     assert objs == ['bar', 'foo']
     alt_client.put_object(Bucket=bucket_name, Key=newkey, Body='newcontent')
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_publicreadwrite_object_publicread():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='public-read-write', object_acl='public-read')
     alt_client = get_alt_client()
@@ -5432,6 +5528,7 @@ def test_access_bucket_publicreadwrite_object_publicread():
     assert objs == ['bar', 'foo']
     alt_client.put_object(Bucket=bucket_name, Key=newkey, Body='newcontent')
 
+@pytest.mark.fails_on_s3proxy
 def test_access_bucket_publicreadwrite_object_publicreadwrite():
     bucket_name, key1, key2, newkey = _setup_access(bucket_acl='public-read-write', object_acl='public-read-write')
     alt_client = get_alt_client()
@@ -5485,6 +5582,7 @@ def test_buckets_list_ctime():
             assert before <= ctime, '%r > %r' % (before, ctime)
 
 @pytest.mark.fails_on_aws
+@pytest.mark.fails_on_s3proxy
 def test_list_buckets_anonymous():
     # Get a connection with bad authorization, then change it to be our new Anonymous auth mechanism,
     # emulating standard HTTP access.
@@ -5563,6 +5661,7 @@ def test_bucket_create_naming_good_contains_period():
 def test_bucket_create_naming_good_contains_hyphen():
     check_good_bucket_name('aaa-111')
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_recreate_not_overriding():
     key_names = ['mykey1', 'mykey2']
     bucket_name = _create_objects(keys=key_names)
@@ -5765,6 +5864,7 @@ def test_object_copy_diff_bucket():
     body = _get_body(response)
     assert 'foo' == body
 
+@pytest.mark.fails_on_s3proxy
 def test_object_copy_not_owned_bucket():
     client = get_client()
     alt_client = get_alt_client()
@@ -5781,6 +5881,7 @@ def test_object_copy_not_owned_bucket():
     status, error_code = _get_status_and_error_code(e.response)
     assert status == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_object_copy_not_owned_object_bucket():
     client = get_client()
     alt_client = get_alt_client()
@@ -6280,8 +6381,6 @@ def test_multipart_upload_small():
     response = client.complete_multipart_upload(Bucket=bucket_name, Key=key1, UploadId=upload_id, MultipartUpload={'Parts': parts})
     response = client.get_object(Bucket=bucket_name, Key=key1)
     assert response['ContentLength'] == objlen
-    # check extra client.complete_multipart_upload
-    response = client.complete_multipart_upload(Bucket=bucket_name, Key=key1, UploadId=upload_id, MultipartUpload={'Parts': parts})
 
 def _create_key_with_random_content(keyname, size=7*1024*1024, bucket_name=None, client=None):
     if bucket_name is None:
@@ -6481,8 +6580,6 @@ def test_multipart_upload():
 
     (upload_id, data, parts) = _multipart_upload(bucket_name=bucket_name, key=key, size=objlen, content_type=content_type, metadata=metadata)
     client.complete_multipart_upload(Bucket=bucket_name, Key=key, UploadId=upload_id, MultipartUpload={'Parts': parts})
-    # check extra client.complete_multipart_upload
-    client.complete_multipart_upload(Bucket=bucket_name, Key=key, UploadId=upload_id, MultipartUpload={'Parts': parts})
 
     response = client.list_objects_v2(Bucket=bucket_name, Prefix=key)
     assert len(response['Contents']) == 1
@@ -6655,6 +6752,7 @@ def test_multipart_copy_multiple_sizes():
     client.complete_multipart_upload(Bucket=dest_bucket_name, Key=dest_key, UploadId=upload_id, MultipartUpload={'Parts': parts})
     _check_key_content(src_key, src_bucket_name, dest_key, dest_bucket_name)
 
+@pytest.mark.fails_on_s3proxy
 def test_multipart_upload_size_too_small():
     bucket_name = get_new_bucket()
     key="mymultipart"
@@ -6786,6 +6884,7 @@ def test_list_multipart_upload():
     client.abort_multipart_upload(Bucket=bucket_name, Key=key2, UploadId=upload_id3)
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_list_multipart_upload_owner():
     bucket_name = get_new_bucket()
 
@@ -6920,6 +7019,7 @@ def _test_multipart_get_part(storage_class=None):
     assert error_code == 'InvalidPart'
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_multipart_get_part():
     _test_multipart_get_part()
 
@@ -7022,6 +7122,7 @@ def test_multipart_sse_c_checksum_complete():
     assert composite_sha256sum == response['ChecksumSHA256']
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_multipart_single_get_part():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -7064,6 +7165,7 @@ def test_multipart_single_get_part():
     assert error_code == 'InvalidPart'
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_non_multipart_get_part():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -7146,6 +7248,7 @@ def _simple_http_req_100_cont(host, port, is_secure, method, resource):
 
     return l[1]
 
+@pytest.mark.fails_on_s3proxy
 def test_100_continue():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -7743,6 +7846,7 @@ def _test_atomic_dual_conditional_write(file_size):
 @pytest.mark.fails_on_aws
 # TODO: test not passing with SSL, fix this
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_atomic_dual_conditional_write_1mb():
     _test_atomic_dual_conditional_write(1024*1024)
 
@@ -15893,6 +15997,7 @@ def test_copy_object_dest_if_none_match(versioning, size):
 
 # TODO: results in a 404 instead of 400 on the RGW
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_object_read_unreadable():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -15901,12 +16006,14 @@ def test_object_read_unreadable():
     assert status == 400
     assert e.response['Error']['Message'] == 'Couldn\'t parse the specified URI.'
 
+@pytest.mark.fails_on_s3proxy
 def test_get_bucket_policy_status():
     bucket_name = get_new_bucket()
     client = get_client()
     resp = client.get_bucket_policy_status(Bucket=bucket_name)
     assert resp['PolicyStatus']['IsPublic'] == False
 
+@pytest.mark.fails_on_s3proxy
 def test_get_public_acl_bucket_policy_status():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -15914,6 +16021,7 @@ def test_get_public_acl_bucket_policy_status():
     resp = client.get_bucket_policy_status(Bucket=bucket_name)
     assert resp['PolicyStatus']['IsPublic'] == True
 
+@pytest.mark.fails_on_s3proxy
 def test_get_authpublic_acl_bucket_policy_status():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -15922,6 +16030,7 @@ def test_get_authpublic_acl_bucket_policy_status():
     assert resp['PolicyStatus']['IsPublic'] == True
 
 
+@pytest.mark.fails_on_s3proxy
 def test_get_publicpolicy_acl_bucket_policy_status():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -15950,6 +16059,7 @@ def test_get_publicpolicy_acl_bucket_policy_status():
     assert resp['PolicyStatus']['IsPublic'] == True
 
 
+@pytest.mark.fails_on_s3proxy
 def test_get_nonpublicpolicy_acl_bucket_policy_status():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -15982,6 +16092,7 @@ def test_get_nonpublicpolicy_acl_bucket_policy_status():
     assert resp['PolicyStatus']['IsPublic'] == False
 
 
+@pytest.mark.fails_on_s3proxy
 def test_get_nonpublicpolicy_principal_bucket_policy_status():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16007,6 +16118,7 @@ def test_get_nonpublicpolicy_principal_bucket_policy_status():
     assert resp['PolicyStatus']['IsPublic'] == False
 
 
+@pytest.mark.fails_on_s3proxy
 def test_bucket_policy_allow_notprincipal():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16034,6 +16146,7 @@ def test_bucket_policy_allow_notprincipal():
     assert error_code == 'InvalidArgument' or error_code == 'MalformedPolicy'
 
 
+@pytest.mark.fails_on_s3proxy
 def test_get_undefined_public_block():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16051,6 +16164,7 @@ def test_get_undefined_public_block():
 
     assert response_code == 'NoSuchPublicAccessBlockConfiguration'
 
+@pytest.mark.fails_on_s3proxy
 def test_get_public_block_deny_bucket_policy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16079,6 +16193,7 @@ def test_get_public_block_deny_bucket_policy():
     status, error_code = _get_status_and_error_code(e.response)
     assert status == 403
 
+@pytest.mark.fails_on_s3proxy
 def test_put_public_block():
     #client = get_svc_client(svc='s3control', client_config=Config(s3={'addressing_style': 'path'}))
     bucket_name = get_new_bucket()
@@ -16098,6 +16213,7 @@ def test_put_public_block():
     assert resp['PublicAccessBlockConfiguration']['RestrictPublicBuckets'] == access_conf['RestrictPublicBuckets']
 
 
+@pytest.mark.fails_on_s3proxy
 def test_block_public_put_bucket_acls():
     #client = get_svc_client(svc='s3control', client_config=Config(s3={'addressing_style': 'path'}))
     bucket_name = get_new_bucket()
@@ -16127,6 +16243,7 @@ def test_block_public_put_bucket_acls():
     assert status == 403
 
 
+@pytest.mark.fails_on_s3proxy
 def test_block_public_object_canned_acls():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16155,6 +16272,7 @@ def test_block_public_object_canned_acls():
     client.put_object(Bucket=bucket_name, Key='foo4', Body='', ACL='private')
 
 
+@pytest.mark.fails_on_s3proxy
 def test_block_public_policy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16172,6 +16290,7 @@ def test_block_public_policy():
     check_access_denied(client.put_bucket_policy, Bucket=bucket_name, Policy=policy_document)
 
 
+@pytest.mark.fails_on_s3proxy
 def test_block_public_policy_with_principal():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16230,6 +16349,7 @@ def test_block_public_restrict_public_buckets():
     assert _get_body(response) == 'bar'
 
 
+@pytest.mark.fails_on_s3proxy
 def test_ignore_public_acls():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16284,6 +16404,7 @@ def test_put_get_delete_public_block():
 
     assert response_code == 'NoSuchPublicAccessBlockConfiguration'
 
+@pytest.mark.fails_on_s3proxy
 def test_multipart_upload_on_a_bucket_with_policy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -17013,6 +17134,7 @@ def test_sse_s3_encrypted_upload_1mb():
 def test_sse_s3_encrypted_upload_8mb():
     _test_sse_s3_encrypted_upload(8*1024*1024)
 
+@pytest.mark.fails_on_s3proxy
 def test_get_object_torrent():
     client = get_client()
     bucket_name = get_new_bucket()

@@ -118,3 +118,8 @@ Then the tests can be run with::
 To run the only bucket logging tests that do not need extension of rollover time, use::
 
   S3TEST_CONF=your.conf tox -- -m 'bucket_logging and not fails_without_logging_rollover'
+
+S3Proxy instructions::
+
+	S3TEST_CONF=s3proxy.conf ./virtualenv/bin/nosetests -a '!fails_on_s3proxy,!bucket-policy,!cors,!encryption,!fails_strict_rfc2616,!lifecycle,!object-lock,!policy,!s3website,!tagging,!versioning'
+
