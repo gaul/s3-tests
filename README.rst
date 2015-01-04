@@ -100,3 +100,7 @@ You can filter tests based on their attributes::
 
 	S3TEST_CONF=your.conf tox -- s3tests_boto3/functional/test_iam.py -m 'not fails_on_rgw'
 
+S3Proxy instructions::
+
+	S3TEST_CONF=s3proxy.conf ./virtualenv/bin/nosetests -a '!fails_on_s3proxy,!bucket-policy,!cors,!encryption,!fails_strict_rfc2616,!lifecycle,!object-lock,!policy,!s3website,!tagging,!versioning'
+

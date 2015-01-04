@@ -143,6 +143,7 @@ def test_versioning_obj_read_not_exist_null():
 @pytest.mark.fails_with_subdomain
 @pytest.mark.appendobject
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_append_object():
     bucket = get_new_bucket()
     key = bucket.new_key('foo')
@@ -164,6 +165,7 @@ def test_append_object():
 @pytest.mark.fails_with_subdomain
 @pytest.mark.appendobject
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_append_normal_object():
     bucket = get_new_bucket()
     key = bucket.new_key('foo')
@@ -181,6 +183,7 @@ def test_append_normal_object():
 @pytest.mark.fails_with_subdomain
 @pytest.mark.appendobject
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_append_object_position_wrong():
     bucket = get_new_bucket()
     key = bucket.new_key('foo')
@@ -199,6 +202,7 @@ def test_append_object_position_wrong():
 # TODO rgw log_bucket.set_as_logging_target() gives 403 Forbidden
 # http://tracker.newdream.net/issues/984
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_logging_toggle():
     bucket = get_new_bucket()
     log_bucket = get_new_bucket(targets.main.default, bucket.name + '-log')
@@ -579,6 +583,7 @@ def _test_atomic_dual_conditional_write(file_size):
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_atomic_dual_conditional_write_1mb():
     _test_atomic_dual_conditional_write(1024*1024)
 

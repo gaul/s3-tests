@@ -178,6 +178,7 @@ def test_object_create_bad_contentlength_none():
 
 @pytest.mark.auth_common
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_object_create_bad_contentlength_mismatch_above():
     content = 'bar'
     length = len(content) + 1
@@ -207,6 +208,7 @@ def test_object_create_bad_authorization_empty():
 
 @pytest.mark.auth_common
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_object_create_date_and_amz_date():
     date = formatdate(usegmt=True)
     key = _setup_bad_object({'Date': date, 'X-Amz-Date': date})
@@ -265,6 +267,7 @@ def _create_new_connection():
 
 @pytest.mark.auth_common
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_contentlength_empty():
     conn = _create_new_connection()
     _add_custom_headers({'Content-Length': ''})
