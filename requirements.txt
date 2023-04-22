@@ -1,5 +1,5 @@
 PyYAML
-nose >=1.0.0
+nose-py3 >=1.0.0
 boto >=2.6.0
 boto3 >=1.0.0
 munch >=2.0.0
