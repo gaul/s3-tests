@@ -527,6 +527,7 @@ def test_bucket_create_bad_authorization_invalid_aws2():
 
 @pytest.mark.auth_aws2
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_ua_empty_aws2():
     v2_client = get_v2_client()
     headers = {'User-Agent': ''}
@@ -534,6 +535,7 @@ def test_bucket_create_bad_ua_empty_aws2():
 
 @pytest.mark.auth_aws2
 @pytest.mark.fails_on_rgw
+@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_ua_none_aws2():
     v2_client = get_v2_client()
     remove = 'User-Agent'
