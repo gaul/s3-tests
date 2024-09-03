@@ -8033,6 +8033,7 @@ def _do_test_create_remove_versions(client, bucket_name, key, num_versions, remo
         print(response['Versions'])
 
 
+@pytest.mark.versioning
 def test_versioning_obj_create_read_remove():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8047,6 +8048,7 @@ def test_versioning_obj_create_read_remove():
     _do_test_create_remove_versions(client, bucket_name, key, num_versions, 4, -1)
     _do_test_create_remove_versions(client, bucket_name, key, num_versions, 3, 3)
 
+@pytest.mark.versioning
 def test_versioning_obj_create_read_remove_head():
     bucket_name = get_new_bucket()
 
