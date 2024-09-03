@@ -20475,6 +20475,7 @@ def test_bucket_logging_object_meta():
     client.put_object_legal_hold(Bucket=src_bucket_name, Key=name, LegalHold={'Status': 'OFF'})
     client.delete_object(Bucket=src_bucket_name, Key=name, VersionId=version_id, BypassGovernanceRetention=True)
 
+
 def _verify_flushed_on_put(result):
     if _has_bucket_logging_extension():
         assert result['ResponseMetadata']['HTTPStatusCode'] == 200
