@@ -1429,6 +1429,7 @@ def test_bucket_list_return_data():
 
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_bucket_list_return_data_versioning():
     bucket_name = get_new_bucket()
     check_configure_versioning_retry(bucket_name, "Enabled", "Enabled")
@@ -1655,6 +1656,7 @@ def _make_objs_dict(key_names):
     objs_dict = {'Objects': objs_list}
     return objs_dict
 
+@pytest.mark.versioning
 def test_versioning_concurrent_multi_object_delete():
     num_objects = 5
     num_versions_per_object = 3
@@ -5739,6 +5741,7 @@ def test_object_copy_key_not_found():
 
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_object_copy_versioned_bucket():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -5804,6 +5807,7 @@ def test_object_copy_versioned_bucket():
 
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_object_copy_versioned_url_encoding():
     bucket = get_new_bucket_resource()
     check_configure_versioning_retry(bucket.name, "Enabled", "Enabled")
@@ -5909,6 +5913,7 @@ def _multipart_upload_checksum(bucket_name, key, size, part_size=5*1024*1024, cl
 
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_object_copy_versioning_multipart_upload():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -6282,6 +6287,7 @@ def check_configure_versioning_retry(bucket_name, status, expected_string):
 
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_multipart_copy_versioned():
     src_bucket_name = get_new_bucket()
     dest_bucket_name = get_new_bucket()
@@ -7661,6 +7667,7 @@ def test_ranged_request_empty_object():
     assert status == 416
     assert error_code == 'InvalidRange'
 
+@pytest.mark.versioning
 def test_versioning_bucket_create_suspend():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -7744,6 +7751,7 @@ def _do_test_create_remove_versions(client, bucket_name, key, num_versions, remo
         print(response['Versions'])
 
 
+@pytest.mark.versioning
 def test_versioning_obj_create_read_remove():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -7758,6 +7766,7 @@ def test_versioning_obj_create_read_remove():
     _do_test_create_remove_versions(client, bucket_name, key, num_versions, 4, -1)
     _do_test_create_remove_versions(client, bucket_name, key, num_versions, 3, 3)
 
+@pytest.mark.versioning
 def test_versioning_obj_create_read_remove_head():
     bucket_name = get_new_bucket()
 
@@ -7808,6 +7817,7 @@ def test_versioning_stack_delete_merkers():
     assert len(versions) == 1
     assert len(delete_markers) == 3
 
+@pytest.mark.versioning
 def test_versioning_obj_plain_null_version_removal():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -7828,6 +7838,7 @@ def test_versioning_obj_plain_null_version_removal():
     response = client.list_object_versions(Bucket=bucket_name)
     assert not 'Versions' in response
 
+@pytest.mark.versioning
 def test_versioning_obj_plain_null_version_overwrite():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -7861,6 +7872,7 @@ def test_versioning_obj_plain_null_version_overwrite():
     response = client.list_object_versions(Bucket=bucket_name)
     assert not 'Versions' in response
 
+@pytest.mark.versioning
 def test_versioning_obj_plain_null_version_overwrite_suspended():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -7926,6 +7938,7 @@ def overwrite_suspended_versioning_obj(client, bucket_name, key, version_ids, co
     return (version_ids, contents)
 
 
+@pytest.mark.versioning
 def test_versioning_obj_suspend_versions():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -7960,6 +7973,7 @@ def test_versioning_obj_suspend_versions():
 
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_versioning_obj_suspended_copy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8006,6 +8020,7 @@ def test_versioning_obj_suspended_copy():
     client.delete_object(Bucket=bucket_name2, Key=key1)
     client.delete_bucket(Bucket=bucket_name2)
 
+@pytest.mark.versioning
 def test_versioning_obj_create_versions_remove_all():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8022,6 +8037,7 @@ def test_versioning_obj_create_versions_remove_all():
     assert len(version_ids) == 0
     assert len(version_ids) == len(contents)
 
+@pytest.mark.versioning
 def test_versioning_obj_create_versions_remove_special_names():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8040,6 +8056,7 @@ def test_versioning_obj_create_versions_remove_special_names():
         assert len(version_ids) == len(contents)
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_versioning_obj_create_overwrite_multipart():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8068,6 +8085,7 @@ def test_versioning_obj_create_overwrite_multipart():
     assert len(version_ids) == 0
     assert len(version_ids) == len(contents)
 
+@pytest.mark.versioning
 def test_versioning_obj_list_marker():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8125,6 +8143,7 @@ def test_versioning_obj_list_marker():
 
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_versioning_copy_obj_version():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8162,6 +8181,7 @@ def test_versioning_copy_obj_version():
     body = _get_body(response)
     assert body == contents[-1]
 
+@pytest.mark.versioning
 def test_versioning_multi_object_delete():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8187,6 +8207,7 @@ def test_versioning_multi_object_delete():
     response = client.list_object_versions(Bucket=bucket_name)
     assert not 'Versions' in response
 
+@pytest.mark.versioning
 def test_versioning_multi_object_delete_with_marker():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8220,6 +8241,7 @@ def test_versioning_multi_object_delete_with_marker():
     assert not 'DeleteMarkers' in response
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_versioning_multi_object_delete_with_marker_create():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8241,6 +8263,7 @@ def test_versioning_multi_object_delete_with_marker_create():
     assert delete_marker_version_id == delete_markers[0]['VersionId']
     assert key == delete_markers[0]['Key']
 
+@pytest.mark.versioning
 def test_versioned_object_acl():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8309,6 +8332,7 @@ def test_versioned_object_acl():
     check_grants(grants, default_policy)
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_versioned_object_acl_no_version_specified():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8395,6 +8419,7 @@ def _do_clear_versioned_bucket_concurrent(client, bucket_name):
         t.append(thr)
     return t
 
+@pytest.mark.versioning
 def test_versioned_concurrent_object_create_concurrent_remove():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8419,6 +8444,7 @@ def test_versioned_concurrent_object_create_concurrent_remove():
         response = client.list_object_versions(Bucket=bucket_name)
         assert not 'Versions' in response
 
+@pytest.mark.versioning
 def test_versioned_concurrent_object_create_and_remove():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12389,6 +12415,7 @@ def test_delete_tags_obj_public():
     response = client.get_object_tagging(Bucket=bucket_name, Key=key)
     assert len(response['TagSet']) == 0
 
+@pytest.mark.versioning
 def test_versioning_bucket_atomic_upload_return_version_id():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12418,6 +12445,7 @@ def test_versioning_bucket_atomic_upload_return_version_id():
     response = client.put_object(Bucket=bucket_name, Key=key)
     assert not 'VersionId' in response
 
+@pytest.mark.versioning
 def test_versioning_bucket_multipart_upload_return_version_id():
     content_type='text/bla'
     objlen = 30 * 1024 * 1024
