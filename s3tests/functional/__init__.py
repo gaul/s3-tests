@@ -97,15 +97,13 @@ def list_versions(client, bucket, batch_size):
     kwargs = {'Bucket': bucket, 'MaxKeys': batch_size}
     truncated = True
     while truncated:
-        listing = client.list_object_versions(**kwargs)
+        listing = client.list_objects(**kwargs)
 
-        kwargs['KeyMarker'] = listing.get('NextKeyMarker')
-        kwargs['VersionIdMarker'] = listing.get('NextVersionIdMarker')
         truncated = listing['IsTruncated']
 
-        objs = listing.get('Versions', []) + listing.get('DeleteMarkers', [])
+        objs = listing.get('Contents', []) + listing.get('DeleteMarkers', [])
         if len(objs):
-            yield [{'Key': o['Key'], 'VersionId': o['VersionId']} for o in objs]
+            yield [{'Key': o['Key']} for o in objs]
 
 def nuke_bucket(client, bucket):
     batch_size = 128
@@ -114,8 +112,7 @@ def nuke_bucket(client, bucket):
     # list and delete objects in batches
     for objects in list_versions(client, bucket, batch_size):
         delete = client.delete_objects(Bucket=bucket,
-                Delete={'Objects': objects, 'Quiet': True},
-                BypassGovernanceRetention=True)
+                Delete={'Objects': objects, 'Quiet': True})
 
         # check for object locks on 403 AccessDenied errors
         for err in delete.get('Errors', []):
