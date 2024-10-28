@@ -401,6 +401,7 @@ def test_object_storage_class():
 @pytest.mark.storage_class
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.multipart
 def test_object_storage_class_multipart():
     sc = configured_storage_classes()
     if len(sc) < 2:
@@ -447,6 +448,7 @@ def test_object_modify_storage_class():
 @pytest.mark.storage_class
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.multipart
 def test_object_modify_storage_class_multipart():
     _do_test_object_modify_storage_class(_populate_multipart_key, size=11*1024*1024)
 
@@ -480,6 +482,7 @@ def test_object_storage_class_copy():
 @pytest.mark.storage_class
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.multipart
 def test_object_storage_class_copy_multipart():
     _do_test_object_storage_class_copy(_populate_multipart_key, size=9*1024*1024)
 
@@ -630,6 +633,7 @@ def _multipart_upload_enc(bucket, s3_key_name, size, part_size=5*1024*1024,
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+@pytest.mark.multipart
 def test_encryption_sse_c_multipart_invalid_chunks_1():
     bucket = get_new_bucket()
     key = "multipart_enc"
@@ -654,6 +658,7 @@ def test_encryption_sse_c_multipart_invalid_chunks_1():
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+@pytest.mark.multipart
 def test_encryption_sse_c_multipart_invalid_chunks_2():
     bucket = get_new_bucket()
     key = "multipart_enc"
