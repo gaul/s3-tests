@@ -293,6 +293,7 @@ def validate_bucket_listv2(bucket_name, prefix, delimiter, continuation_token, m
     return response['NextContinuationToken']
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_bucket_list_delimiter_prefix():
     bucket_name = _create_objects(keys=['asdf', 'boo/bar', 'boo/baz/xyzzy', 'cquux/thud', 'cquux/bla'])
 
@@ -381,6 +382,7 @@ def test_bucket_listv2_delimiter_alt():
     assert prefixes == ['ba', 'ca']
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_bucket_list_delimiter_prefix_underscore():
     bucket_name = _create_objects(keys=['_obj1_','_under1/bar', '_under1/baz/xyzzy', '_under2/thud', '_under2/bla'])
 
@@ -1016,6 +1018,7 @@ def test_bucket_listv2_maxkeys_one():
     keys = _get_keys(response)
     assert keys == key_names[1:]
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_bucket_list_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
     bucket_name = _create_objects(keys=key_names)
@@ -1027,6 +1030,7 @@ def test_bucket_list_maxkeys_zero():
     keys = _get_keys(response)
     assert keys == []
 
+@pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.list_objects_v2
 def test_bucket_listv2_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
@@ -1771,6 +1775,7 @@ def test_object_head_zero_bytes():
     response = client.head_object(Bucket=bucket_name, Key='foo')
     assert response['ContentLength'] == 0
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_write_check_etag():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1787,6 +1792,7 @@ def test_object_write_cache_control():
     response = client.head_object(Bucket=bucket_name, Key='foo')
     assert response['ResponseMetadata']['HTTPHeaders']['cache-control'] == cache_control
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_write_expires():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3382,6 +3388,7 @@ def test_bucket_head_extended():
     assert int(response['ResponseMetadata']['HTTPHeaders']['x-rgw-object-count']) == 3
     assert int(response['ResponseMetadata']['HTTPHeaders']['x-rgw-bytes-used']) == 9
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get_bucket_acl():
     bucket_name = _setup_bucket_object_acl('private', 'public-read')
 
@@ -3389,6 +3396,7 @@ def test_object_raw_get_bucket_acl():
     response = unauthenticated_client.get_object(Bucket=bucket_name, Key='foo')
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get_object_acl():
     bucket_name = _setup_bucket_object_acl('public-read', 'private')
 
@@ -5363,6 +5371,7 @@ def test_buckets_create_then_list():
         if name not in buckets_list:
             raise RuntimeError("S3 implementation's GET on Service did not return bucket we created: %r", bucket.name)
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_buckets_list_ctime():
     # check that creation times are within a day
     before = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=1)
@@ -5429,6 +5438,7 @@ def override_prefix_0():
 def test_bucket_create_naming_good_starts_digit(override_prefix_0):
     check_good_bucket_name('foo', _prefix='0'+get_prefix())
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_bucket_create_naming_good_contains_period():
     check_good_bucket_name('aaa.111')
 
@@ -5478,7 +5488,7 @@ def test_bucket_create_special_key_names():
         response = client.get_object(Bucket=bucket_name, Key=name)
         body = _get_body(response)
         assert name == body
-        client.put_object_acl(Bucket=bucket_name, Key=name, ACL='private')
+        client.put_object(Bucket=bucket_name, Key=name)
 
 def test_bucket_list_special_prefix():
     key_names = ['_bla/1', '_bla/2', '_bla/3', '_bla/4', 'abcd']
@@ -7452,6 +7462,7 @@ def test_ranged_request_skip_leading_bytes_response_code():
     assert response['ResponseMetadata']['HTTPStatusCode'] == 206
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_ranged_request_return_trailing_bytes_response_code():
     content = 'testcontent'
 

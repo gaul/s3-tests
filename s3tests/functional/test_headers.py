@@ -216,6 +216,7 @@ def test_object_create_date_and_amz_date():
 
 @pytest.mark.auth_common
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_create_amz_date_and_no_date():
     date = formatdate(usegmt=True)
     key = _setup_bad_object({'X-Amz-Date': date}, ('Date',))
@@ -243,6 +244,7 @@ def test_bucket_create_contentlength_none():
 
 @pytest.mark.auth_common
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_acl_create_contentlength_none():
     bucket = get_new_bucket()
     key = bucket.new_key('foo')
