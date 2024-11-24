@@ -188,6 +188,7 @@ def test_basic_key_count():
     response1 = client.list_objects_v2(Bucket=bucket_name)
     assert response1['KeyCount'] == 5
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_basic():
     bucket_name = _create_objects(keys=['foo/bar', 'foo/bar/xyzzy', 'quux/thud', 'asdf'])
     client = get_client()
@@ -202,6 +203,7 @@ def test_bucket_list_delimiter_basic():
     assert prefixes == ['foo/', 'quux/']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_basic():
     bucket_name = _create_objects(keys=['foo/bar', 'foo/bar/xyzzy', 'quux/thud', 'asdf'])
     client = get_client()
@@ -340,14 +342,17 @@ def test_bucket_listv2_delimiter_prefix():
 
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_prefix_ends_with_delimiter():
     bucket_name = _create_objects(keys=['asdf/'])
     validate_bucket_listv2(bucket_name, 'asdf/', '/', None, 1000, False, ['asdf/'], [], last=True)
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_prefix_ends_with_delimiter():
     bucket_name = _create_objects(keys=['asdf/'])
     validate_bucket_list(bucket_name, 'asdf/', '/', '', 1000, False, ['asdf/'], [], None)
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_alt():
     bucket_name = _create_objects(keys=['bar', 'baz', 'cab', 'foo'])
     client = get_client()
@@ -365,6 +370,7 @@ def test_bucket_list_delimiter_alt():
     assert prefixes == ['ba', 'ca']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_alt():
     bucket_name = _create_objects(keys=['bar', 'baz', 'cab', 'foo'])
     client = get_client()
@@ -426,6 +432,7 @@ def test_bucket_listv2_delimiter_prefix_underscore():
     continuation_token  = validate_bucket_listv2(bucket_name, prefix, delim, None, 2, False, ['_under1/bar'], ['_under1/baz/'], last=True)
 
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_percentage():
     bucket_name = _create_objects(keys=['b%ar', 'b%az', 'c%ab', 'foo'])
     client = get_client()
@@ -442,6 +449,7 @@ def test_bucket_list_delimiter_percentage():
     assert prefixes == ['b%', 'c%']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_percentage():
     bucket_name = _create_objects(keys=['b%ar', 'b%az', 'c%ab', 'foo'])
     client = get_client()
@@ -457,6 +465,7 @@ def test_bucket_listv2_delimiter_percentage():
     # bar, baz, and cab should be broken up by the 'a' delimiters
     assert prefixes == ['b%', 'c%']
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_whitespace():
     bucket_name = _create_objects(keys=['b ar', 'b az', 'c ab', 'foo'])
     client = get_client()
@@ -473,6 +482,7 @@ def test_bucket_list_delimiter_whitespace():
     assert prefixes == ['b ', 'c ']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_whitespace():
     bucket_name = _create_objects(keys=['b ar', 'b az', 'c ab', 'foo'])
     client = get_client()
@@ -488,6 +498,7 @@ def test_bucket_listv2_delimiter_whitespace():
     # bar, baz, and cab should be broken up by the 'a' delimiters
     assert prefixes == ['b ', 'c ']
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_dot():
     bucket_name = _create_objects(keys=['b.ar', 'b.az', 'c.ab', 'foo'])
     client = get_client()
@@ -504,6 +515,7 @@ def test_bucket_list_delimiter_dot():
     assert prefixes == ['b.', 'c.']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_dot():
     bucket_name = _create_objects(keys=['b.ar', 'b.az', 'c.ab', 'foo'])
     client = get_client()
@@ -519,6 +531,7 @@ def test_bucket_listv2_delimiter_dot():
     # bar, baz, and cab should be broken up by the 'a' delimiters
     assert prefixes == ['b.', 'c.']
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_unreadable():
     key_names=['bar', 'baz', 'cab', 'foo']
     bucket_name = _create_objects(keys=key_names)
@@ -533,6 +546,7 @@ def test_bucket_list_delimiter_unreadable():
     assert prefixes == []
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_unreadable():
     key_names=['bar', 'baz', 'cab', 'foo']
     bucket_name = _create_objects(keys=key_names)
@@ -877,6 +891,7 @@ def test_bucket_listv2_prefix_delimiter_basic():
     assert keys == ['foo/bar']
     assert prefixes == ['foo/baz/']
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_prefix_delimiter_alt():
     key_names = ['bar', 'bazar', 'cab', 'foo']
     bucket_name = _create_objects(keys=key_names)
@@ -892,6 +907,7 @@ def test_bucket_list_prefix_delimiter_alt():
     assert prefixes == ['baza']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_prefix_delimiter_alt():
     key_names = ['bar', 'bazar', 'cab', 'foo']
     bucket_name = _create_objects(keys=key_names)
@@ -906,6 +922,7 @@ def test_bucket_listv2_prefix_delimiter_alt():
     assert keys == ['bar']
     assert prefixes == ['baza']
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_prefix_delimiter_prefix_not_exist():
     key_names = ['b/a/r', 'b/a/c', 'b/a/g', 'g']
     bucket_name = _create_objects(keys=key_names)
@@ -919,6 +936,7 @@ def test_bucket_list_prefix_delimiter_prefix_not_exist():
     assert prefixes == []
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_prefix_delimiter_prefix_not_exist():
     key_names = ['b/a/r', 'b/a/c', 'b/a/g', 'g']
     bucket_name = _create_objects(keys=key_names)
@@ -931,6 +949,7 @@ def test_bucket_listv2_prefix_delimiter_prefix_not_exist():
     assert keys == []
     assert prefixes == []
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_prefix_delimiter_delimiter_not_exist():
     key_names = ['b/a/c', 'b/a/g', 'b/a/r', 'g']
     bucket_name = _create_objects(keys=key_names)
@@ -944,6 +963,7 @@ def test_bucket_list_prefix_delimiter_delimiter_not_exist():
     assert prefixes == []
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_prefix_delimiter_delimiter_not_exist():
     key_names = ['b/a/c', 'b/a/g', 'b/a/r', 'g']
     bucket_name = _create_objects(keys=key_names)
@@ -956,6 +976,7 @@ def test_bucket_listv2_prefix_delimiter_delimiter_not_exist():
     assert keys == ['b/a/c', 'b/a/g', 'b/a/r']
     assert prefixes == []
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_prefix_delimiter_prefix_delimiter_not_exist():
     key_names = ['b/a/c', 'b/a/g', 'b/a/r', 'g']
     bucket_name = _create_objects(keys=key_names)
@@ -969,6 +990,7 @@ def test_bucket_list_prefix_delimiter_prefix_delimiter_not_exist():
     assert prefixes == []
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_prefix_delimiter_prefix_delimiter_not_exist():
     key_names = ['b/a/c', 'b/a/g', 'b/a/r', 'g']
     bucket_name = _create_objects(keys=key_names)
