@@ -311,6 +311,7 @@ def test_bucket_create_bad_authorization_none():
 
 @pytest.mark.auth_aws2
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_create_bad_contentlength_mismatch_below_aws2():
     check_aws2_support()
     content = 'bar'

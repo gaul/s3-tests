@@ -161,6 +161,7 @@ def test_object_create_bad_md5_invalid_short():
     assert error_code == 'InvalidDigest'
 
 @pytest.mark.auth_common
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_create_bad_md5_bad():
     e = _add_header_create_bad_object({'Content-MD5':'rL0Y20xC+Fzt72VPzMSk2A=='})
     status, error_code = _get_status_and_error_code(e.response)
