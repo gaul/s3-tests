@@ -3472,6 +3472,7 @@ def _setup_bucket_acl(bucket_acl=None):
 
     return bucket_name
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
 
@@ -3620,6 +3621,7 @@ def test_object_put_acl_mtime():
     obj_list = response['Versions'][0]
     _compare_dates(obj_list['LastModified'],create_mtime)
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_authenticated():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
 
@@ -3627,6 +3629,7 @@ def test_object_raw_authenticated():
     response = client.get_object(Bucket=bucket_name, Key='foo')
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_response_headers():
     bucket_name = _setup_bucket_object_acl('private', 'private')
 
@@ -3640,6 +3643,7 @@ def test_object_raw_response_headers():
     assert response['ResponseMetadata']['HTTPHeaders']['content-encoding'] == 'aaa'
     assert response['ResponseMetadata']['HTTPHeaders']['cache-control'] == 'no-cache'
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_authenticated_bucket_acl():
     bucket_name = _setup_bucket_object_acl('private', 'public-read')
 
@@ -3647,6 +3651,7 @@ def test_object_raw_authenticated_bucket_acl():
     response = client.get_object(Bucket=bucket_name, Key='foo')
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_authenticated_object_acl():
     bucket_name = _setup_bucket_object_acl('public-read', 'private')
 
@@ -3689,9 +3694,11 @@ def _test_object_raw_get_x_amz_expires_not_expired(client):
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
     assert res['status_code'] == 200
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get_x_amz_expires_not_expired():
     _test_object_raw_get_x_amz_expires_not_expired(client=get_client())
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get_x_amz_expires_not_expired_tenant():
     _test_object_raw_get_x_amz_expires_not_expired(client=get_tenant_client())
 
