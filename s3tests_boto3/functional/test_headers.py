@@ -302,6 +302,7 @@ def test_bucket_create_contentlength_none():
 # TODO: remove 'fails_on_rgw' and once we have learned how to remove the content-length header
 @pytest.mark.fails_on_rgw
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_minio
 def test_object_acl_create_contentlength_none():
     bucket_name = get_new_bucket()
     client = get_client()

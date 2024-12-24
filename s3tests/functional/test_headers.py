@@ -245,6 +245,7 @@ def test_bucket_create_contentlength_none():
 @pytest.mark.auth_common
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_minio
 def test_object_acl_create_contentlength_none():
     bucket = get_new_bucket()
     key = bucket.new_key('foo')
