@@ -204,6 +204,7 @@ def test_basic_key_count():
     response1 = client.list_objects_v2(Bucket=bucket_name)
     assert response1['KeyCount'] == 5
 
+@pytest.mark.fails_on_s3proxy_minio
 @pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_basic():
     bucket_name = _create_objects(keys=['foo/bar', 'foo/bar/xyzzy', 'quux/thud', 'asdf'])
@@ -219,6 +220,7 @@ def test_bucket_list_delimiter_basic():
     assert prefixes == ['foo/', 'quux/']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_minio
 @pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_basic():
     bucket_name = _create_objects(keys=['foo/bar', 'foo/bar/xyzzy', 'quux/thud', 'asdf'])
@@ -312,6 +314,7 @@ def validate_bucket_listv2(bucket_name, prefix, delimiter, continuation_token, m
 
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_minio
 def test_bucket_list_delimiter_prefix():
     bucket_name = _create_objects(keys=['asdf', 'boo/bar', 'boo/baz/xyzzy', 'cquux/thud', 'cquux/bla'])
 
@@ -405,6 +408,7 @@ def test_bucket_listv2_delimiter_alt():
 
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_minio
 def test_bucket_list_delimiter_prefix_underscore():
     bucket_name = _create_objects(keys=['_obj1_','_under1/bar', '_under1/baz/xyzzy', '_under2/thud', '_under2/bla'])
 
@@ -481,6 +485,7 @@ def test_bucket_listv2_delimiter_percentage():
     # bar, baz, and cab should be broken up by the 'a' delimiters
     assert prefixes == ['b%', 'c%']
 
+@pytest.mark.fails_on_s3proxy_minio
 @pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_whitespace():
     bucket_name = _create_objects(keys=['b ar', 'b az', 'c ab', 'foo'])
@@ -498,6 +503,7 @@ def test_bucket_list_delimiter_whitespace():
     assert prefixes == ['b ', 'c ']
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_minio
 @pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_whitespace():
     bucket_name = _create_objects(keys=['b ar', 'b az', 'c ab', 'foo'])
@@ -1323,6 +1329,7 @@ def test_bucket_listv2_continuationtoken_empty():
     assert keys == key_names
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_minio
 def test_bucket_listv2_continuationtoken():
     key_names = ['bar', 'baz', 'foo', 'quxx']
     bucket_name = _create_objects(keys=key_names)
@@ -1503,6 +1510,7 @@ def test_bucket_list_return_data_versioning():
         assert obj['VersionId'] == key_data['VersionId']
         _compare_dates(obj['LastModified'],key_data['LastModified'])
 
+@pytest.mark.fails_on_s3proxy_minio
 def test_bucket_list_objects_anonymous():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1512,6 +1520,7 @@ def test_bucket_list_objects_anonymous():
     unauthenticated_client.list_objects(Bucket=bucket_name)
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_minio
 def test_bucket_listv2_objects_anonymous():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1602,6 +1611,7 @@ def _do_wait_completion(t):
     for thr in t:
         thr.join()
 
+@pytest.mark.fails_on_s3proxy_minio
 def test_bucket_concurrent_set_canned_acl():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1858,6 +1868,7 @@ def test_object_write_cache_control():
     assert response['ResponseMetadata']['HTTPHeaders']['cache-control'] == cache_control
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_minio
 def test_object_write_expires():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3367,6 +3378,7 @@ def _setup_bucket_acl(bucket_acl=None):
     return bucket_name
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_minio
 def test_object_raw_get():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
 
@@ -3459,6 +3471,7 @@ def test_bucket_head_extended():
     assert int(response['ResponseMetadata']['HTTPHeaders']['x-rgw-bytes-used']) == 9
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_minio
 def test_object_raw_get_bucket_acl():
     bucket_name = _setup_bucket_object_acl('private', 'public-read')
 
@@ -6658,6 +6671,7 @@ def test_abort_multipart_upload():
     assert 'Contents' not in response
 
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_minio
 def test_abort_multipart_upload_not_found():
     bucket_name = get_new_bucket()
     client = get_client()
