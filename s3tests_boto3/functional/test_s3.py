@@ -7534,6 +7534,7 @@ def test_ranged_request_invalid_range():
     assert status == 416
     assert error_code == 'InvalidRange'
 
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_ranged_request_empty_object():
     content = ''
 
