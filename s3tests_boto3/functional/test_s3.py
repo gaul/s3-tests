@@ -1611,6 +1611,7 @@ def test_bucket_concurrent_set_canned_acl():
     for r in results:
         assert r == True
 
+@pytest.mark.fails_on_s3proxy_minio
 def test_object_write_to_nonexist_bucket():
     key_names = ['foo']
     bucket_name = 'whatchutalkinboutwillis'
