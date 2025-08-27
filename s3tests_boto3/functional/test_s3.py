@@ -3075,7 +3075,7 @@ def test_get_object_ifmatch_failed():
     assert status == 412
     assert error_code == 'PreconditionFailed'
 
-@pytest.mark.fails_on_s3proxy  # remove when upgrading to jclouds 2.7.0
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_get_object_ifnonematch_good():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3107,7 +3107,7 @@ def test_get_object_ifmodifiedsince_good():
     assert body == 'bar'
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy  # remove when upgrading to jclouds 2.7.0
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_get_object_ifmodifiedsince_failed():
     bucket_name = get_new_bucket()
     client = get_client()
