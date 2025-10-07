@@ -3174,7 +3174,6 @@ def test_put_object_ifmatch_good():
     assert body == 'zar'
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_put_object_ifmatch_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3215,7 +3214,6 @@ def test_put_object_ifmatch_overwrite_existed_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_put_object_ifmatch_nonexisted_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3251,7 +3249,6 @@ def test_put_object_ifnonmatch_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_put_object_ifnonmatch_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3290,7 +3287,6 @@ def test_put_object_ifnonmatch_nonexisted_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_put_object_ifnonmatch_overwrite_existed_failed():
     bucket_name = get_new_bucket()
     client = get_client()
