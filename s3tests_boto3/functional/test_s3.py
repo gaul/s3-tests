@@ -6510,7 +6510,6 @@ def test_abort_multipart_upload_not_found():
 
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_list_multipart_upload():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -6544,7 +6543,6 @@ def test_list_multipart_upload():
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_list_multipart_upload_owner():
     bucket_name = get_new_bucket()
 
@@ -6591,7 +6589,6 @@ def test_list_multipart_upload_owner():
         client1.abort_multipart_upload(Bucket=bucket_name, Key=key1, UploadId=upload1)
 
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_upload_missing_part():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -7921,7 +7918,6 @@ def test_versioning_obj_create_versions_remove_special_names():
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
 @pytest.mark.versioning
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioning_obj_create_overwrite_multipart():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -11467,7 +11463,6 @@ def test_versioning_bucket_atomic_upload_return_version_id():
 
 @pytest.mark.multipart
 @pytest.mark.versioning
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioning_bucket_multipart_upload_return_version_id():
     content_type='text/bla'
     objlen = 30 * 1024 * 1024
