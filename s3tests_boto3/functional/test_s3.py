@@ -5905,6 +5905,7 @@ def _multipart_upload(bucket_name, key, size, part_size=5*1024*1024, client=None
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_copy_versioning_multipart_upload():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -6071,6 +6072,7 @@ def _check_key_content(src_key, src_bucket_name, dest_key, dest_bucket_name, ver
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_small():
     src_key = 'foo'
     src_bucket_name = _create_key_with_random_content(src_key)
@@ -6089,6 +6091,7 @@ def test_multipart_copy_small():
 
 @pytest.mark.copy
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_invalid_range():
     client = get_client()
     src_key = 'source'
@@ -6112,6 +6115,7 @@ def test_multipart_copy_invalid_range():
 # TODO: remove fails_on_rgw when https://tracker.ceph.com/issues/40795 is resolved
 @pytest.mark.fails_on_rgw
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_improper_range():
     client = get_client()
     src_key = 'source'
@@ -6143,6 +6147,7 @@ def test_multipart_copy_improper_range():
 
 @pytest.mark.copy
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_without_range():
     client = get_client()
     src_key = 'source'
@@ -6171,6 +6176,7 @@ def test_multipart_copy_without_range():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_special_names():
     src_bucket_name = get_new_bucket()
 
@@ -6265,6 +6271,7 @@ def check_configure_versioning_retry(bucket_name, status, expected_string):
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_versioned():
     src_bucket_name = get_new_bucket()
     dest_bucket_name = get_new_bucket()
@@ -6356,6 +6363,7 @@ def test_multipart_upload_multiple_sizes():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_multiple_sizes():
     src_key = 'foo'
     src_bucket_name = _create_key_with_random_content(src_key, 12*1024*1024)
@@ -6502,6 +6510,7 @@ def test_abort_multipart_upload_not_found():
 
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_list_multipart_upload():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -6535,6 +6544,7 @@ def test_list_multipart_upload():
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_list_multipart_upload_owner():
     bucket_name = get_new_bucket()
 
@@ -6581,6 +6591,7 @@ def test_list_multipart_upload_owner():
         client1.abort_multipart_upload(Bucket=bucket_name, Key=key1, UploadId=upload1)
 
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_upload_missing_part():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -6601,6 +6612,7 @@ def test_multipart_upload_missing_part():
     assert error_code == 'InvalidPart'
 
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_upload_incorrect_etag():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -7909,6 +7921,7 @@ def test_versioning_obj_create_versions_remove_special_names():
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioning_obj_create_overwrite_multipart():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -9249,6 +9262,7 @@ def test_lifecycle_deletemarker_expiration():
 
 @pytest.mark.lifecycle
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_lifecycle_set_multipart():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -9267,6 +9281,7 @@ def test_lifecycle_set_multipart():
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_lifecycle_multipart_expiration():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -10083,6 +10098,7 @@ def _check_content_using_range_enc(client, bucket_name, key, data, size, step, e
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_encryption_sse_c_multipart_upload():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -10130,6 +10146,7 @@ def test_encryption_sse_c_multipart_upload():
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_encryption_sse_c_unaligned_multipart_upload():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -10178,6 +10195,7 @@ def test_encryption_sse_c_unaligned_multipart_upload():
 # TODO: remove this fails_on_rgw when I fix it
 @pytest.mark.fails_on_rgw
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_encryption_sse_c_multipart_invalid_chunks_1():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -10207,6 +10225,7 @@ def test_encryption_sse_c_multipart_invalid_chunks_1():
 # TODO: remove this fails_on_rgw when I fix it
 @pytest.mark.fails_on_rgw
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_encryption_sse_c_multipart_invalid_chunks_2():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -10234,6 +10253,7 @@ def test_encryption_sse_c_multipart_invalid_chunks_2():
 
 @pytest.mark.encryption
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_encryption_sse_c_multipart_bad_download():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -10503,6 +10523,7 @@ def test_sse_kms_not_declared():
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_sse_kms_multipart_upload():
     kms_keyid = get_main_kms_keyid()
     bucket_name = get_new_bucket()
@@ -10549,6 +10570,7 @@ def test_sse_kms_multipart_upload():
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_sse_kms_multipart_invalid_chunks_1():
     kms_keyid = get_main_kms_keyid()
     kms_keyid2 = get_secondary_kms_keyid()
@@ -10577,6 +10599,7 @@ def test_sse_kms_multipart_invalid_chunks_1():
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_sse_kms_multipart_invalid_chunks_2():
     kms_keyid = get_main_kms_keyid()
     bucket_name = get_new_bucket()
@@ -11444,6 +11467,7 @@ def test_versioning_bucket_atomic_upload_return_version_id():
 
 @pytest.mark.multipart
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioning_bucket_multipart_upload_return_version_id():
     content_type='text/bla'
     objlen = 30 * 1024 * 1024
@@ -12736,6 +12760,7 @@ def test_object_lock_delete_object_with_retention():
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
 @pytest.mark.object_lock
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_lock_delete_multipart_object_with_retention():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -12947,6 +12972,7 @@ def test_object_lock_delete_object_with_legal_hold_on():
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
 @pytest.mark.object_lock
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_lock_delete_multipart_object_with_legal_hold_on():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -13757,6 +13783,7 @@ def test_sse_s3_default_method_head():
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_sse_s3_default_multipart_upload():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -13982,6 +14009,7 @@ def test_object_checksum_sha256():
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_checksum_sha256():
     bucket = get_new_bucket()
     client = get_client()
@@ -14048,6 +14076,7 @@ def test_multipart_checksum_sha256():
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_checksum_3parts():
     bucket = get_new_bucket()
     client = get_client()
