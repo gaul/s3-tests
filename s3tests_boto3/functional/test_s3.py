@@ -299,6 +299,7 @@ def validate_bucket_listv2(bucket_name, prefix, delimiter, continuation_token, m
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_minio
+@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_list_delimiter_prefix():
     bucket_name = _create_objects(keys=['asdf', 'boo/bar', 'boo/baz/xyzzy', 'cquux/thud', 'cquux/bla'])
 
@@ -322,6 +323,7 @@ def test_bucket_list_delimiter_prefix():
 
 @pytest.mark.list_objects_v2
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_listv2_delimiter_prefix():
     bucket_name = _create_objects(keys=['asdf', 'boo/bar', 'boo/baz/xyzzy', 'cquux/thud', 'cquux/bla'])
 
@@ -393,6 +395,7 @@ def test_bucket_listv2_delimiter_alt():
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_minio
+@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_list_delimiter_prefix_underscore():
     bucket_name = _create_objects(keys=['_obj1_','_under1/bar', '_under1/baz/xyzzy', '_under2/thud', '_under2/bla'])
 
@@ -415,6 +418,7 @@ def test_bucket_list_delimiter_prefix_underscore():
 
 @pytest.mark.list_objects_v2
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_listv2_delimiter_prefix_underscore():
     bucket_name = _create_objects(keys=['_obj1_','_under1/bar', '_under1/baz/xyzzy', '_under2/thud', '_under2/bla'])
 
