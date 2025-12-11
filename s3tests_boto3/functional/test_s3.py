@@ -3079,6 +3079,8 @@ def test_get_object_ifmatch_failed():
     assert status == 412
     assert error_code == 'PreconditionFailed'
 
+# localstack returns no etag with 304 responses
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_azureblob
 def test_get_object_ifnonematch_good():
     bucket_name = get_new_bucket()
@@ -3110,6 +3112,8 @@ def test_get_object_ifmodifiedsince_good():
     body = _get_body(response)
     assert body == 'bar'
 
+# localstack returns no etag with 304 responses
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
 def test_get_object_ifmodifiedsince_failed():
