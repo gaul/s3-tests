@@ -1067,6 +1067,7 @@ def test_bucket_listv2_maxkeys_one():
     assert keys == key_names[1:]
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_list_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
     bucket_name = _create_objects(keys=key_names)
@@ -1079,6 +1080,7 @@ def test_bucket_list_maxkeys_zero():
     assert keys == []
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.list_objects_v2
 def test_bucket_listv2_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
