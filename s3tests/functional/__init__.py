@@ -145,6 +145,27 @@ bucket cleanup'.format(bucket, delta.total_seconds()))
                     Delete={'Objects': objects, 'Quiet': True},
                     BypassGovernanceRetention=True)
 
+    # abort any in-progress multipart uploads; DeleteBucket fails otherwise
+    key_marker = None
+    upload_id_marker = None
+    while True:
+        kwargs = {'Bucket': bucket}
+        if key_marker is not None:
+            kwargs['KeyMarker'] = key_marker
+        if upload_id_marker is not None:
+            kwargs['UploadIdMarker'] = upload_id_marker
+        response = client.list_multipart_uploads(**kwargs)
+        for upload in response.get('Uploads', []):
+            try:
+                client.abort_multipart_upload(Bucket=bucket,
+                        Key=upload['Key'], UploadId=upload['UploadId'])
+            except ClientError:
+                pass
+        if not response.get('IsTruncated'):
+            break
+        key_marker = response.get('NextKeyMarker')
+        upload_id_marker = response.get('NextUploadIdMarker')
+
     client.delete_bucket(Bucket=bucket)
 
 def nuke_prefixed_buckets(prefix, client=None):
