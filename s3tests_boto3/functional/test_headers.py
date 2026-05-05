@@ -404,7 +404,6 @@ def test_object_create_bad_md5_invalid_garbage_aws2():
 @pytest.mark.auth_aws2
 # TODO: remove 'fails_on_rgw' and once we have learned how to manipulate the Content-Length header
 @pytest.mark.fails_on_rgw
-@pytest.mark.fails_on_s3proxy
 def test_object_create_bad_contentlength_mismatch_below_aws2():
     v2_client = get_v2_client()
     content = 'bar'
