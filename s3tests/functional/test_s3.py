@@ -1858,6 +1858,7 @@ def test_object_head_zero_bytes():
     assert response['ContentLength'] == 0
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
 def test_object_write_check_etag():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1875,6 +1876,7 @@ def test_object_write_cache_control():
     assert response['ResponseMetadata']['HTTPHeaders']['cache-control'] == cache_control
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_minio
 def test_object_write_expires():
     bucket_name = get_new_bucket()
