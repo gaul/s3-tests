@@ -248,6 +248,9 @@ def test_bucket_create_contentlength_none():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_minio
+# Swift has no per-object ACLs (access is container-level via X-Container-Read/
+# Write), so the openstack-swift backend cannot implement PutObjectAcl.
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_acl_create_contentlength_none():
     bucket = get_new_bucket()
     key = bucket.new_key('foo')
