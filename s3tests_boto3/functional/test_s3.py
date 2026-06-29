@@ -3442,6 +3442,9 @@ def test_bucket_head_extended():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_minio
+# Swift has no per-object ACLs, so an object cannot be public while its
+# container is private; anonymous access follows the container.
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_raw_get_bucket_acl():
     bucket_name = _setup_bucket_object_acl('private', 'public-read')
 
@@ -3450,6 +3453,9 @@ def test_object_raw_get_bucket_acl():
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
 @pytest.mark.fails_on_s3proxy_azureblob
+# Swift has no per-object ACLs, so an object cannot be private while its
+# container is public-read; anonymous access follows the container.
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_raw_get_object_acl():
     bucket_name = _setup_bucket_object_acl('public-read', 'private')
 
