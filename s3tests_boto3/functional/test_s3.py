@@ -1433,6 +1433,10 @@ def _compare_dates(datetime1, datetime2):
     assert datetime1 == datetime2
 
 @pytest.mark.fails_on_dbstore
+# openstack-swift-sdk: s3proxy's openstack4j parses the object Last-Modified
+# header in the JVM's local zone, so HEAD and listing dates disagree on a
+# non-UTC host; re-enable once the GMT fix ships.
+@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_list_return_data():
     key_names = ['bar', 'baz', 'foo']
     bucket_name = _create_objects(keys=key_names)
