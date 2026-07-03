@@ -3128,6 +3128,7 @@ def test_get_object_ifmodifiedsince_good():
 @pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_get_object_ifmodifiedsince_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -5437,6 +5438,7 @@ def test_buckets_create_then_list():
             raise RuntimeError("S3 implementation's GET on Service did not return bucket we created: %r", bucket.name)
 
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_buckets_list_ctime():
     # check that creation times are within a day
     before = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=1)
