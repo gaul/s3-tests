@@ -5717,6 +5717,9 @@ def test_object_copy_not_owned_object_bucket():
 
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
+# Azure and Swift have no per-blob ACLs (Quirks.NO_BLOB_ACCESS_CONTROL)
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_copy_canned_acl():
     bucket_name = get_new_bucket()
     client = get_client()
