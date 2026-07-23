@@ -14032,7 +14032,13 @@ def test_object_checksum_sha256():
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+# s3proxy only persists the composite checksum for HeadObject on backends
+# that store parts as readable blobs (transient-nio2/filesystem-nio2)
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_minio
+@pytest.mark.fails_on_s3proxy_swift
 def test_multipart_checksum_sha256():
     bucket = get_new_bucket()
     client = get_client()
@@ -14099,7 +14105,14 @@ def test_multipart_checksum_sha256():
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+# s3proxy computes the composite from the true part checksums only on
+# backends that store parts as readable blobs; this test asserts a
+# composite over per-part values the completion request misstates
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_minio
+@pytest.mark.fails_on_s3proxy_swift
 def test_multipart_checksum_3parts():
     bucket = get_new_bucket()
     client = get_client()
