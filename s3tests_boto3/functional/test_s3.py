@@ -6103,7 +6103,6 @@ def _check_key_content(src_key, src_bucket_name, dest_key, dest_bucket_name, ver
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_small():
     src_key = 'foo'
     src_bucket_name = _create_key_with_random_content(src_key)
@@ -6122,7 +6121,6 @@ def test_multipart_copy_small():
 
 @pytest.mark.copy
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_invalid_range():
     client = get_client()
     src_key = 'source'
@@ -6146,7 +6144,6 @@ def test_multipart_copy_invalid_range():
 # TODO: remove fails_on_rgw when https://tracker.ceph.com/issues/40795 is resolved
 @pytest.mark.fails_on_rgw
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_improper_range():
     client = get_client()
     src_key = 'source'
@@ -6178,7 +6175,6 @@ def test_multipart_copy_improper_range():
 
 @pytest.mark.copy
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_without_range():
     client = get_client()
     src_key = 'source'
@@ -6207,7 +6203,6 @@ def test_multipart_copy_without_range():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_special_names():
     src_bucket_name = get_new_bucket()
 
