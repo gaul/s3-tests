@@ -6389,7 +6389,6 @@ def test_multipart_upload_multiple_sizes():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_copy_multiple_sizes():
     src_key = 'foo'
     src_bucket_name = _create_key_with_random_content(src_key, 12*1024*1024)
