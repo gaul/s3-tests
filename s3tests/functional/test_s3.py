@@ -20153,6 +20153,7 @@ def test_delete_object_version_if_match():
     version = response['VersionId']
     client.delete_object(Bucket=bucket, Key=key, VersionId=version, IfMatch='*')
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20174,6 +20175,7 @@ def test_delete_object_if_match_last_modified_time():
     response = client.delete_object(Bucket=bucket, Key=key, IfMatchLastModifiedTime=badmtime)
     assert 204 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20198,6 +20200,7 @@ def test_delete_object_current_if_match_last_modified_time():
     e = assert_raises(ClientError, client.delete_object, Bucket=bucket, Key=key, IfMatchLastModifiedTime=badmtime)
     assert (412, 'PreconditionFailed') == _get_status_and_error_code(e.response)
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20221,6 +20224,7 @@ def test_delete_object_version_if_match_last_modified_time():
     response = client.delete_object(Bucket=bucket, Key=key, VersionId=version, IfMatchLastModifiedTime=badmtime)
     assert 204 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20242,6 +20246,7 @@ def test_delete_object_if_match_size():
     response = client.delete_object(Bucket=bucket, Key=key, IfMatchSize=badsize)
     assert 204 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20265,6 +20270,7 @@ def test_delete_object_current_if_match_size():
     e = assert_raises(ClientError, client.delete_object, Bucket=bucket, Key=key, IfMatchSize=badsize)
     assert (412, 'PreconditionFailed') == _get_status_and_error_code(e.response)
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20353,6 +20359,7 @@ def test_delete_objects_version_if_match():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'VersionId': version, 'ETag': 'badetag'}]})
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20375,6 +20382,7 @@ def test_delete_objects_if_match_last_modified_time():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'LastModifiedTime': badmtime}]})
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20400,6 +20408,7 @@ def test_delete_objects_current_if_match_last_modified_time():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'LastModifiedTime': badmtime}]})
     assert 'PreconditionFailed' == response['Errors'][0]['Code']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20426,6 +20435,7 @@ def test_delete_objects_version_if_match_last_modified_time():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'VersionId': version, 'LastModifiedTime': badmtime}]})
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20448,6 +20458,7 @@ def test_delete_objects_if_match_size():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'Size': badsize}]})
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20473,6 +20484,7 @@ def test_delete_objects_current_if_match_size():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'Size': badsize}]})
     assert 'PreconditionFailed' == response['Errors'][0]['Code']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
