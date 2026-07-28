@@ -7597,6 +7597,7 @@ def test_cors_presigned_get_object_tenant():
         method='get_object',
     )
 
+@pytest.mark.cors
 @pytest.mark.fails_on_rgw
 def test_cors_presigned_get_object_v2():
     _test_cors_options_presigned_method(
@@ -7604,6 +7605,7 @@ def test_cors_presigned_get_object_v2():
         method='get_object',
     )
 
+@pytest.mark.cors
 @pytest.mark.fails_on_rgw
 def test_cors_presigned_get_object_tenant_v2():
     _test_cors_options_presigned_method(
@@ -7626,6 +7628,7 @@ def test_cors_presigned_put_object_with_acl():
         cannedACL='private',
     )
 
+@pytest.mark.cors
 @pytest.mark.fails_on_rgw
 def test_cors_presigned_put_object_v2():
     _test_cors_options_presigned_method(
@@ -7633,6 +7636,7 @@ def test_cors_presigned_put_object_v2():
         method='put_object',
     )
 
+@pytest.mark.cors
 @pytest.mark.fails_on_rgw
 def test_cors_presigned_put_object_tenant_v2():
     _test_cors_options_presigned_method(
