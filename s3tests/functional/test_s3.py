@@ -21662,6 +21662,7 @@ def check_parts_count(parts, expected):
     else:
         assert parts['PartsCount'] == expected
 
+@pytest.mark.object_attributes
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
 def test_get_multipart_checksum_object_attributes():
@@ -21706,6 +21707,7 @@ def test_get_multipart_checksum_object_attributes():
         assert obj_part['ChecksumSHA256'] == checksums[partno - 1]
         partno += 1
 
+@pytest.mark.object_attributes
 @pytest.mark.fails_on_dbstore
 def test_get_multipart_object_attributes():
     bucket_name = get_new_bucket()
@@ -21742,6 +21744,7 @@ def test_get_multipart_object_attributes():
         assert 'ChecksumSHA256' not in obj_part
         partno += 1
 
+@pytest.mark.object_attributes
 @pytest.mark.fails_on_dbstore
 def test_get_paginated_multipart_object_attributes():
     bucket_name = get_new_bucket()
@@ -21803,6 +21806,7 @@ def test_get_paginated_multipart_object_attributes():
         assert 'ChecksumSHA256' not in obj_part
         partno += 1
 
+@pytest.mark.object_attributes
 @pytest.mark.fails_on_dbstore
 def test_get_single_multipart_object_attributes():
     bucket_name = get_new_bucket()
@@ -21836,6 +21840,7 @@ def test_get_single_multipart_object_attributes():
     assert obj_part['Size'] == part_size
     assert 'ChecksumSHA256' not in obj_part
 
+@pytest.mark.object_attributes
 def test_get_checksum_object_attributes():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -21860,6 +21865,7 @@ def test_get_checksum_object_attributes():
     assert 'ObjectParts' not in response
 
 @pytest.mark.versioning
+@pytest.mark.object_attributes
 def test_get_versioned_object_attributes():
     bucket_name = get_new_bucket()
     check_configure_versioning_retry(bucket_name, "Enabled", "Enabled")
@@ -21901,6 +21907,7 @@ def test_get_versioned_object_attributes():
     assert response['StorageClass'] == 'STANDARD'
     assert 'ObjectParts' not in response
 
+@pytest.mark.object_attributes
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
 def test_get_sse_c_encrypted_object_attributes():
@@ -21938,6 +21945,7 @@ def test_get_sse_c_encrypted_object_attributes():
     assert response['StorageClass'] == 'STANDARD'
     assert 'ObjectParts' not in response
 
+@pytest.mark.object_attributes
 @pytest.mark.fails_on_dbstore
 def test_get_object_attributes():
     bucket_name = get_new_bucket()
