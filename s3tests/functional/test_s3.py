@@ -22395,6 +22395,7 @@ def test_multipart_put_object_suspended_if_none_match():
     response = successful_conditional_multipart_upload(client, bucket, key, IfNoneMatch='*')
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -22420,6 +22421,7 @@ def test_delete_object_if_match():
     client.put_object(Bucket=bucket, Key=key)
     client.delete_object(Bucket=bucket, Key=key, IfMatch='*')
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -22456,6 +22458,7 @@ def test_delete_object_current_if_match():
     client.delete_object(Bucket=bucket, Key=key, VersionId=version)
     client.delete_object(Bucket=bucket, Key=key, IfMatch='*')
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -22631,6 +22634,7 @@ def test_delete_object_version_if_match_size():
     response = client.delete_object(Bucket=bucket, Key=key, VersionId=version, IfMatchSize=badsize)
     assert 204 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -22651,6 +22655,7 @@ def test_delete_objects_if_match():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'ETag': 'badetag'}]})
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -22674,6 +22679,7 @@ def test_delete_objects_current_if_match():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'ETag': 'badetag'}]})
     assert 'PreconditionFailed' == response['Errors'][0]['Code']
 
+@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
