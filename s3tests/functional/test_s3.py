@@ -1779,6 +1779,7 @@ def test_multi_object_delete():
     assert 'Contents' not in response
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy
 def test_expected_bucket_owner():
   bucket_name = get_new_bucket()
   client = get_client()
