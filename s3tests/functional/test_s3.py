@@ -19839,6 +19839,12 @@ def test_delete_marker_expiration():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# Azure stamps a fresh ETag on every write, so the ETag captured up top no
+# longer matches the object by the time If-Match names it again.
+@pytest.mark.fails_on_s3proxy_azureblob
+# LocalStack answers If-None-Match with a specific ETag 501 NotImplemented; it
+# implements only the wildcard form.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_put_object_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
