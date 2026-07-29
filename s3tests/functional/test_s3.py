@@ -6979,7 +6979,6 @@ def test_multipart_single_get_part():
     assert error_code == 'InvalidPart'
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 @pytest.mark.multipart
 def test_non_multipart_get_part():
     bucket_name = get_new_bucket()
