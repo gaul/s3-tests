@@ -8024,6 +8024,7 @@ def test_versioning_obj_create_read_remove_head():
     clean_up_bucket(client, bucket_name, key, version_ids)
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_versioning_stack_delete_merkers():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -19774,6 +19775,7 @@ def test_delete_marker_nonversioned():
 
 @pytest.mark.delete_marker
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_delete_marker_versioned():
     bucket = get_new_bucket()
     client = get_client()
@@ -19787,6 +19789,7 @@ def test_delete_marker_versioned():
 
 @pytest.mark.delete_marker
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_delete_marker_suspended():
     bucket = get_new_bucket()
     client = get_client()
@@ -19926,6 +19929,7 @@ def test_multipart_put_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_put_current_object_if_none_match():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -19955,6 +19959,7 @@ def test_put_current_object_if_none_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_multipart_put_current_object_if_none_match():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -19982,6 +19987,7 @@ def test_multipart_put_current_object_if_none_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_put_current_object_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -20013,6 +20019,7 @@ def test_put_current_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_multipart_put_current_object_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -20040,6 +20047,7 @@ def test_multipart_put_current_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+@pytest.mark.versioning
 def test_put_object_current_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
