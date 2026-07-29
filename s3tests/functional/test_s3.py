@@ -3663,6 +3663,11 @@ def test_object_raw_get_x_amz_expires_out_positive_range():
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
     assert res['status_code'] == 403
 
+# On Swift a HEAD reports no Content-Encoding at all, though a GET of the same
+# object reports it correctly: openstack4j's HEAD paths surface only the
+# X-Object-Meta- headers, so s3proxy never sees the content-* ones.  Reading
+# them would mean bypassing openstack4j the way getBlob already does.
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_content_encoding_aws_chunked():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -15425,6 +15430,12 @@ def test_multipart_checksum_sha256():
 
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
+# The test compares the S3 composite ETag it computes itself against the one
+# the store reports.  Azure and GCS mint ETags of their own -- 0x2612EF70EA7E540
+# and pnCm3NtwJZJ5h/BMqA4v8Q== rather than <md5>-3 -- which s3proxy cannot
+# reconstruct from a completed upload.
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
 def test_multipart_reupload_checksum_and_etag():
     bucket = get_new_bucket()
     client = get_client()
