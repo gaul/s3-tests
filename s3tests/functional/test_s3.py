@@ -13609,6 +13609,7 @@ def test_object_lock_put_obj_lock_invalid_bucket():
     assert status == 409
     assert error_code == 'InvalidBucketState'
 
+@pytest.mark.object_lock
 def test_object_lock_put_obj_lock_enable_after_create():
     bucket_name = get_new_bucket_name()
     client = get_client()
