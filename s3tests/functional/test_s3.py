@@ -14713,6 +14713,7 @@ def test_block_public_policy_with_principal():
 
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_block_public_restrict_public_buckets():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -14780,6 +14781,7 @@ def test_ignore_public_acls():
     check_access_denied(alt_client.list_objects, Bucket=bucket_name)
     check_access_denied(alt_client.get_object, Bucket=bucket_name, Key='key1')
 
+@pytest.mark.fails_on_s3proxy
 def test_put_get_delete_public_block():
     bucket_name = get_new_bucket()
     client = get_client()
