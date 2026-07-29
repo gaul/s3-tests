@@ -20761,6 +20761,7 @@ def test_bucket_create_delete_bucket_ownership():
 
     client.delete_bucket_ownership_controls(Bucket=bucket)
 
+@pytest.mark.bucket_policy
 def test_head_object_404_with_policy_prefix():
     client = get_client()
     bucket = get_new_bucket(client)
