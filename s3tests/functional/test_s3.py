@@ -1057,7 +1057,6 @@ def test_bucket_listv2_maxkeys_one():
     assert keys == key_names[1:]
 
 @pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_list_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
     bucket_name = _create_objects(keys=key_names)
@@ -1070,7 +1069,6 @@ def test_bucket_list_maxkeys_zero():
     assert keys == []
 
 @pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.list_objects_v2
 def test_bucket_listv2_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
@@ -3154,7 +3152,6 @@ def test_get_object_ifmodifiedsince_good():
 @pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_swift
 def test_get_object_ifmodifiedsince_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3401,7 +3398,6 @@ def _setup_bucket_acl(bucket_acl=None):
 
     return bucket_name
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
 
@@ -3555,7 +3551,6 @@ def test_object_put_acl_mtime():
     obj_list = response['Versions'][0]
     _compare_dates(obj_list['LastModified'],create_mtime)
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_authenticated():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
 
@@ -3563,7 +3558,6 @@ def test_object_raw_authenticated():
     response = client.get_object(Bucket=bucket_name, Key='foo')
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_response_headers():
     bucket_name = _setup_bucket_object_acl('private', 'private')
 
@@ -3577,7 +3571,6 @@ def test_object_raw_response_headers():
     assert response['ResponseMetadata']['HTTPHeaders']['content-encoding'] == 'aaa'
     assert response['ResponseMetadata']['HTTPHeaders']['cache-control'] == 'no-cache'
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_authenticated_bucket_acl():
     bucket_name = _setup_bucket_object_acl('private', 'public-read')
 
@@ -3585,7 +3578,6 @@ def test_object_raw_authenticated_bucket_acl():
     response = client.get_object(Bucket=bucket_name, Key='foo')
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_authenticated_object_acl():
     bucket_name = _setup_bucket_object_acl('public-read', 'private')
 
@@ -3628,11 +3620,9 @@ def _test_object_raw_get_x_amz_expires_not_expired(client):
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
     assert res['status_code'] == 200
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get_x_amz_expires_not_expired():
     _test_object_raw_get_x_amz_expires_not_expired(client=get_client())
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_raw_get_x_amz_expires_not_expired_tenant():
     _test_object_raw_get_x_amz_expires_not_expired(client=get_tenant_client())
 
@@ -3971,7 +3961,10 @@ def test_bucket_create_naming_dns_dash_dot():
     assert status == 400
     assert error_code == 'InvalidBucketName'
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_create_exists():
     # aws-s3 default region allows recreation of buckets
     # but all other regions fail with BucketAlreadyOwnedByYou.
@@ -5641,7 +5634,10 @@ def test_bucket_create_naming_good_contains_period():
 def test_bucket_create_naming_good_contains_hyphen():
     check_good_bucket_name('aaa-111')
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_recreate_not_overriding():
     key_names = ['mykey1', 'mykey2']
     bucket_name = _create_objects(keys=key_names)
@@ -7857,7 +7853,6 @@ def test_ranged_request_skip_leading_bytes_response_code():
     assert response['ResponseMetadata']['HTTPStatusCode'] == 206
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_ranged_request_return_trailing_bytes_response_code():
     content = 'testcontent'
 
