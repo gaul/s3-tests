@@ -368,12 +368,10 @@ def test_bucket_listv2_delimiter_prefix():
 
 
 @pytest.mark.list_objects_v2
-@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_prefix_ends_with_delimiter():
     bucket_name = _create_objects(keys=['asdf/'])
     validate_bucket_listv2(bucket_name, 'asdf/', '/', None, 1000, False, ['asdf/'], [], last=True)
 
-@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_prefix_ends_with_delimiter():
     bucket_name = _create_objects(keys=['asdf/'])
     validate_bucket_list(bucket_name, 'asdf/', '/', '', 1000, False, ['asdf/'], [], None)
@@ -650,7 +648,6 @@ def test_bucket_listv2_delimiter_none():
     assert prefixes == []
 
 @pytest.mark.list_objects_v2
-@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_fetchowner_notempty():
     key_names = ['foo/bar', 'foo/baz', 'quux']
     bucket_name = _create_objects(keys=key_names)
@@ -661,7 +658,6 @@ def test_bucket_listv2_fetchowner_notempty():
     assert 'Owner' in objs_list[0]
 
 @pytest.mark.list_objects_v2
-@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_fetchowner_defaultempty():
     key_names = ['foo/bar', 'foo/baz', 'quux']
     bucket_name = _create_objects(keys=key_names)
@@ -672,7 +668,6 @@ def test_bucket_listv2_fetchowner_defaultempty():
     assert not 'Owner' in objs_list[0]
 
 @pytest.mark.list_objects_v2
-@pytest.mark.fails_on_s3proxy
 def test_bucket_listv2_fetchowner_empty():
     key_names = ['foo/bar', 'foo/baz', 'quux']
     bucket_name = _create_objects(keys=key_names)
@@ -713,7 +708,6 @@ def test_bucket_listv2_delimiter_not_exist():
 
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_bucket_list_delimiter_not_skip_special():
     key_names = ['0/'] + ['0/%s' % i for i in range(1000, 1999)]
     key_names2 = ['1999', '1999#', '1999+', '2000']
@@ -3302,7 +3296,6 @@ def test_get_object_ifmodifiedsince_failed():
     assert e.response['ResponseMetadata']['HTTPHeaders']['etag'] == etag
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_get_object_ifunmodifiedsince_good():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4203,7 +4196,6 @@ def check_grants(got, want):
         assert g == {'Grantee': {}}
 
 
-@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_default():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4232,7 +4224,6 @@ def test_bucket_acl_default():
         )
 
 @pytest.mark.fails_on_aws
-@pytest.mark.fails_on_s3proxy
 def test_bucket_acl_canned_during_create():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4424,7 +4415,6 @@ def test_put_bucket_acl_grant_group_read():
             ],
         )
 
-@pytest.mark.fails_on_s3proxy
 def test_object_acl_default():
     bucket_name = get_new_bucket()
     client = get_client()
