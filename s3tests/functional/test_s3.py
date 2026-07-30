@@ -3218,6 +3218,10 @@ def test_get_object_ifunmodifiedsince_failed():
 
 
 @pytest.mark.fails_on_aws
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_object_ifmatch_good():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3239,6 +3243,10 @@ def test_put_object_ifmatch_good():
     assert body == 'zar'
 
 @pytest.mark.fails_on_dbstore
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_object_ifmatch_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3261,6 +3269,10 @@ def test_put_object_ifmatch_failed():
     assert body == 'bar'
 
 @pytest.mark.fails_on_aws
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_object_ifmatch_overwrite_existed_good():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3279,6 +3291,10 @@ def test_put_object_ifmatch_overwrite_existed_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_object_ifmatch_nonexisted_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3296,6 +3312,10 @@ def test_put_object_ifmatch_nonexisted_failed():
     assert error_code == 'NoSuchKey'
 
 @pytest.mark.fails_on_aws
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_object_ifnonmatch_good():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3314,6 +3334,10 @@ def test_put_object_ifnonmatch_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_object_ifnonmatch_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -7644,6 +7668,10 @@ def _test_atomic_conditional_write(file_size):
     _verify_atomic_key_data(bucket_name, objname, file_size, 'B')
 
 @pytest.mark.fails_on_aws
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_atomic_conditional_write_1mb():
     _test_atomic_conditional_write(1024*1024)
 
@@ -19856,6 +19884,10 @@ def test_delete_marker_expiration():
 # LocalStack answers If-None-Match with a specific ETag 501 NotImplemented; it
 # implements only the wildcard form.
 @pytest.mark.fails_on_s3proxy_localstack
+# s3proxy answers a conditional write NotImplemented on Swift, whose only
+# native form is If-None-Match: *.  Emulating the rest means a HEAD then an
+# unconditional write, which is not the guarantee the caller asked for.
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_object_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
