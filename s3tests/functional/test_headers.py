@@ -489,7 +489,6 @@ def test_object_create_bad_ua_none_aws2():
     v2_client.put_object(Bucket=bucket_name, Key=key_name, Body='bar')
 
 @pytest.mark.auth_aws2
-@pytest.mark.fails_on_s3proxy
 def test_object_create_bad_date_invalid_aws2():
     v2_client = get_v2_client()
     headers = {'x-amz-date': 'Bad Date'}
@@ -499,7 +498,6 @@ def test_object_create_bad_date_invalid_aws2():
     assert error_code == 'AccessDenied'
 
 @pytest.mark.auth_aws2
-@pytest.mark.fails_on_s3proxy
 def test_object_create_bad_date_empty_aws2():
     v2_client = get_v2_client()
     headers = {'x-amz-date': ''}
@@ -561,7 +559,6 @@ def test_bucket_create_bad_authorization_invalid_aws2():
 
 @pytest.mark.auth_aws2
 @pytest.mark.fails_on_rgw
-@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_ua_empty_aws2():
     v2_client = get_v2_client()
     headers = {'User-Agent': ''}
@@ -569,14 +566,12 @@ def test_bucket_create_bad_ua_empty_aws2():
 
 @pytest.mark.auth_aws2
 @pytest.mark.fails_on_rgw
-@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_ua_none_aws2():
     v2_client = get_v2_client()
     remove = 'User-Agent'
     _remove_header_create_bucket(remove, v2_client)
 
 @pytest.mark.auth_aws2
-@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_date_invalid_aws2():
     v2_client = get_v2_client()
     headers = {'x-amz-date': 'Bad Date'}
@@ -586,7 +581,6 @@ def test_bucket_create_bad_date_invalid_aws2():
     assert error_code == 'AccessDenied'
 
 @pytest.mark.auth_aws2
-@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_date_empty_aws2():
     v2_client = get_v2_client()
     headers = {'x-amz-date': ''}
