@@ -19950,6 +19950,15 @@ def failing_conditional_multipart_upload(expected_failure, client, bucket, key, 
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# s3proxy hands a conditional completion to the store rather than checking it
+# beforehand, which would only hold while nothing else writes the same key.
+# GCS compose can only require that the target be absent and Swift's manifest
+# PUT honours only If-None-Match: *, so neither can answer a condition naming
+# an ETag and s3proxy answers NotImplemented; LocalStack answers the same, of
+# its own accord.
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
+@pytest.mark.fails_on_s3proxy_localstack
 def test_multipart_put_object_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
