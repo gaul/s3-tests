@@ -190,7 +190,6 @@ def test_object_create_bad_expect_mismatch():
     client.put_object(Bucket=bucket_name, Key=key_name, Body='bar')
 
 @pytest.mark.auth_common
-@pytest.mark.fails_on_s3proxy
 def test_object_create_bad_expect_empty():
     bucket_name, key_name = _add_header_create_object({'Expect': ''})
     client = get_client()
@@ -348,7 +347,6 @@ def test_bucket_create_bad_expect_mismatch():
     client.create_bucket(Bucket=bucket_name)
 
 @pytest.mark.auth_common
-@pytest.mark.fails_on_s3proxy
 def test_bucket_create_bad_expect_empty():
     headers = {'Expect': ''}
     _add_header_create_bucket(headers)
