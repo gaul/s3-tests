@@ -4149,7 +4149,7 @@ def test_bucket_acl_canned_during_create():
             ],
         )
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_acl_canned():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4334,7 +4334,8 @@ def test_object_acl_default():
             ],
         )
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_acl_canned_during_create():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4369,7 +4370,8 @@ def test_object_acl_canned_during_create():
             ],
         )
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_acl_canned():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4735,7 +4737,8 @@ def _check_object_acl(permission):
 
 
 @pytest.mark.fails_on_aws
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_acl():
     _check_object_acl('FULL_CONTROL')
 
@@ -6627,7 +6630,8 @@ def test_multipart_copy_multiple_sizes():
     client.complete_multipart_upload(Bucket=dest_bucket_name, Key=dest_key, UploadId=upload_id, MultipartUpload={'Parts': parts})
     _check_key_content(src_key, src_bucket_name, dest_key, dest_bucket_name)
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.multipart
 def test_multipart_upload_size_too_small():
     bucket_name = get_new_bucket()
@@ -7701,7 +7705,7 @@ def _test_atomic_dual_conditional_write(file_size):
 @pytest.mark.fails_on_aws
 # TODO: test not passing with SSL, fix this
 @pytest.mark.fails_on_rgw
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_swift
 def test_atomic_dual_conditional_write_1mb():
     _test_atomic_dual_conditional_write(1024*1024)
 
