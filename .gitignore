@@ -9,6 +9,7 @@
 *.pyo
 
 /*.egg-info
+/.tox
 /virtualenv
 /venv
 
