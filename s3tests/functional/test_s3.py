@@ -4235,7 +4235,6 @@ def test_bucket_acl_canned_during_create():
             ],
         )
 
-@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_acl_canned():
     bucket_name = get_new_bucket_name()
     client = get_client()
