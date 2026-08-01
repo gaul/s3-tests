@@ -1996,7 +1996,6 @@ def _get_post_url(bucket_name):
     endpoint = get_config_endpoint()
     return '{endpoint}/{bucket_name}'.format(endpoint=endpoint, bucket_name=bucket_name)
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_anonymous_request():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2121,7 +2120,6 @@ def test_post_object_authenticated_request_bad_access_key():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_set_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2137,7 +2135,6 @@ def test_post_object_set_success_code():
     message = ET.fromstring(r.content).find('Key')
     assert message.text == 'foo.txt'
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_set_invalid_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2192,7 +2189,6 @@ def test_post_object_upload_larger_than_chunk():
     body = _get_body(response)
     assert body == foo_string
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_set_key_from_filename():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2334,7 +2330,6 @@ def test_post_object_escaped_field_values():
     body = _get_body(response)
     assert body == 'bar'
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_success_redirect_action():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2443,7 +2438,6 @@ def test_post_object_invalid_access_key():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_invalid_date_format():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2509,7 +2503,6 @@ def test_post_object_no_key_specified():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_signature():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2543,7 +2536,6 @@ def test_post_object_missing_signature():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_policy_condition():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2576,7 +2568,6 @@ def test_post_object_missing_policy_condition():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_user_specified_header():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2613,7 +2604,6 @@ def test_post_object_user_specified_header():
     response = client.get_object(Bucket=bucket_name, Key='foo.txt')
     assert response['Metadata']['foo'] == 'barclamp'
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_request_missing_policy_specified_field():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2648,7 +2638,6 @@ def test_post_object_request_missing_policy_specified_field():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_condition_is_case_sensitive():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2682,7 +2671,6 @@ def test_post_object_condition_is_case_sensitive():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_expires_is_case_sensitive():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2716,7 +2704,6 @@ def test_post_object_expires_is_case_sensitive():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_expired_policy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2750,7 +2737,6 @@ def test_post_object_expired_policy():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_wrong_bucket():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2787,7 +2773,6 @@ def test_post_object_wrong_bucket():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_invalid_request_field_value():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2821,7 +2806,6 @@ def test_post_object_invalid_request_field_value():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_expires_condition():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2855,7 +2839,6 @@ def test_post_object_missing_expires_condition():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_conditions_list():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2881,7 +2864,6 @@ def test_post_object_missing_conditions_list():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_upload_size_limit_exceeded():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2915,7 +2897,6 @@ def test_post_object_upload_size_limit_exceeded():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_missing_content_length_argument():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2949,7 +2930,6 @@ def test_post_object_missing_content_length_argument():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_invalid_content_length_argument():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2983,7 +2963,6 @@ def test_post_object_invalid_content_length_argument():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 400
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_upload_size_below_minimum():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3064,7 +3043,6 @@ def test_post_object_upload_size_rgw_chunk_size_bug():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 204
 
-@pytest.mark.fails_on_s3proxy
 def test_post_object_empty_conditions():
     bucket_name = get_new_bucket()
     client = get_client()
