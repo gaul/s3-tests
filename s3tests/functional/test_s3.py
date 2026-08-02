@@ -1635,7 +1635,6 @@ def test_object_write_to_nonexist_bucket():
 def _ev_add_te_header(request, **kwargs):
     request.headers.add_header('Transfer-Encoding', 'chunked')
 
-@pytest.mark.fails_on_s3proxy
 def test_object_write_with_chunked_transfer_encoding():
     bucket_name = get_new_bucket()
     client = get_client()
