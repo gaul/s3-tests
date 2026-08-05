@@ -1843,6 +1843,7 @@ def test_object_head_zero_bytes():
     response = client.head_object(Bucket=bucket_name, Key='foo')
     assert response['ContentLength'] == 0
 
+@pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
 def test_object_write_check_etag():
     bucket_name = get_new_bucket()
@@ -6800,6 +6801,7 @@ def test_multipart_upload_missing_part():
     assert error_code == 'InvalidPart'
 
 @pytest.mark.multipart
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_multipart_upload_incorrect_etag():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -15412,9 +15414,10 @@ def test_multipart_checksum_sha256():
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
 # The test compares the S3 composite ETag it computes itself against the one
-# the store reports.  GCS mints an ETag of its own -- pnCm3NtwJZJ5h/BMqA4v8Q==
-# rather than <md5>-3 -- which s3proxy cannot reconstruct from a completed
-# upload.
+# the store reports.  Azure and GCS mint ETags of their own -- 0x2612EF70EA7E540
+# and pnCm3NtwJZJ5h/BMqA4v8Q== rather than <md5>-3 -- which s3proxy cannot
+# reconstruct from a completed upload.
+@pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
 def test_multipart_reupload_checksum_and_etag():
     bucket = get_new_bucket()
@@ -19830,6 +19833,9 @@ def test_delete_marker_expiration():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# Azure stamps a fresh ETag on every write, so the ETag captured up top no
+# longer matches the object by the time If-Match names it again.
+@pytest.mark.fails_on_s3proxy_azureblob
 # LocalStack answers If-None-Match with a specific ETag 501 NotImplemented; it
 # implements only the wildcard form.
 @pytest.mark.fails_on_s3proxy_localstack
