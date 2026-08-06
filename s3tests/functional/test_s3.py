@@ -205,7 +205,6 @@ def test_basic_key_count():
     assert response1['KeyCount'] == 5
 
 @pytest.mark.fails_on_s3proxy_nio2
-@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_list_delimiter_basic():
     bucket_name = _create_objects(keys=['foo/bar', 'foo/bar/xyzzy', 'quux/thud', 'asdf'])
     client = get_client()
@@ -221,7 +220,6 @@ def test_bucket_list_delimiter_basic():
 
 @pytest.mark.list_objects_v2
 @pytest.mark.fails_on_s3proxy_nio2
-@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_listv2_delimiter_basic():
     bucket_name = _create_objects(keys=['foo/bar', 'foo/bar/xyzzy', 'quux/thud', 'asdf'])
     client = get_client()
