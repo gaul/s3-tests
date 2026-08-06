@@ -3496,7 +3496,11 @@ def test_object_raw_get_object_acl():
     assert status == 403
     assert error_code == 'AccessDenied'
 
-@pytest.mark.fails_on_s3proxy
+# needs a versioned bucket, which only the aws-s3-sdk backend provides
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_put_acl_mtime():
     key = 'foo'
     bucket_name = get_new_bucket()
