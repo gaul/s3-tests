@@ -1993,7 +1993,9 @@ def _get_post_url(bucket_name):
     endpoint = get_config_endpoint()
     return '{endpoint}/{bucket_name}'.format(endpoint=endpoint, bucket_name=bucket_name)
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 def test_post_object_anonymous_request():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2118,7 +2120,9 @@ def test_post_object_authenticated_request_bad_access_key():
     r = requests.post(url, files=payload, verify=get_config_ssl_verify())
     assert r.status_code == 403
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 def test_post_object_set_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2134,7 +2138,9 @@ def test_post_object_set_success_code():
     message = ET.fromstring(r.content).find('Key')
     assert message.text == 'foo.txt'
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 def test_post_object_set_invalid_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -3400,7 +3406,6 @@ def test_object_raw_get_bucket_gone():
     assert status == 404
     assert error_code == 'NoSuchBucket'
 
-@pytest.mark.fails_on_s3proxy
 def test_object_delete_key_bucket_gone():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3412,7 +3417,6 @@ def test_object_delete_key_bucket_gone():
 
     e = assert_raises(ClientError, unauthenticated_client.delete_object, Bucket=bucket_name, Key='foo')
     status, error_code = _get_status_and_error_code(e.response)
-    # TODO: S3Proxy returns 403 here
     assert status == 404
     assert error_code == 'NoSuchBucket'
 
@@ -3688,7 +3692,9 @@ def test_object_anon_put():
     assert status == 403
     assert error_code == 'AccessDenied'
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 def test_object_anon_put_write_access():
     bucket_name = _setup_bucket_acl('public-read-write')
     client = get_client()
@@ -4163,7 +4169,9 @@ def test_bucket_acl_canned():
             ],
         )
 
-@pytest.mark.fails_on_s3proxy
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 def test_bucket_acl_canned_publicreadwrite():
     bucket_name = get_new_bucket_name()
     client = get_client()
