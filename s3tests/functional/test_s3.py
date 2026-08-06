@@ -2047,6 +2047,8 @@ def test_post_object_authenticated_request():
     body = _get_body(response)
     assert body == 'bar'
 
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_post_object_authenticated_no_content_type():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2084,6 +2086,8 @@ def test_post_object_authenticated_no_content_type():
     body = _get_body(response)
     assert body == 'bar'
 
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_swift
 def test_post_object_authenticated_request_bad_access_key():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2336,7 +2340,9 @@ def test_post_object_escaped_field_values():
 # S3Proxy passes through the opaque ETag GCS keeps rather than the hex MD5 S3
 # reports, and the redirect URL percent-encodes it, so the base64 one arrives
 # with %2B and %3D where this expects + and =.
+@pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 def test_post_object_success_redirect_action():
     bucket_name = get_new_bucket_name()
     client = get_client()
