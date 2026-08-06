@@ -97,13 +97,29 @@ def list_versions(client, bucket, batch_size):
     kwargs = {'Bucket': bucket, 'MaxKeys': batch_size}
     truncated = True
     while truncated:
-        listing = client.list_objects(**kwargs)
+        # A plain listing hides old versions and delete markers, which keep
+        # DeleteBucket answering BucketNotEmpty on a once-versioned bucket.
+        # Some s3proxy backends implement no versioning and answer
+        # NotImplemented to the versions listing; fall back to keys there,
+        # where plain deletes really remove.
+        try:
+            listing = client.list_object_versions(**kwargs)
+            objs = listing.get('Versions', []) + \
+                    listing.get('DeleteMarkers', [])
+            batch = [{'Key': o['Key'], 'VersionId': o['VersionId']}
+                     for o in objs]
+        except ClientError:
+            listing = client.list_objects(**kwargs)
+            objs = listing.get('Contents', [])
+            batch = [{'Key': o['Key']} for o in objs]
 
         truncated = listing['IsTruncated']
 
-        objs = listing.get('Contents', []) + listing.get('DeleteMarkers', [])
-        if len(objs):
-            yield [{'Key': o['Key']} for o in objs]
+        # LocalStack ignores MaxKeys on ListObjectVersions and answers the
+        # whole bucket in one page; DeleteObjects takes at most 1000 keys,
+        # so slice the page rather than trust its size.
+        for i in range(0, len(batch), batch_size):
+            yield batch[i:i + batch_size]
 
 def nuke_bucket(client, bucket):
     batch_size = 128
