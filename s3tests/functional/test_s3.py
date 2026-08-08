@@ -8494,10 +8494,6 @@ def test_versioning_multi_object_delete_with_marker_create():
     assert delete_marker_version_id == delete_markers[0]['VersionId']
     assert key == delete_markers[0]['Key']
 
-# s3proxy's BlobStore ACL operations carry no versionId, so it cannot
-# answer for one version of a key
-@pytest.mark.fails_on_s3proxy_localstack
-@pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioned_object_acl():
     bucket_name = get_new_bucket()
@@ -8567,10 +8563,6 @@ def test_versioned_object_acl():
     check_grants(grants, default_policy)
 
 @pytest.mark.fails_on_dbstore
-# s3proxy's BlobStore ACL operations carry no versionId, so it cannot
-# answer for one version of a key
-@pytest.mark.fails_on_s3proxy_localstack
-@pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioned_object_acl_no_version_specified():
     bucket_name = get_new_bucket()
