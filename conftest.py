@@ -41,18 +41,23 @@ LEAK_UNPREFIXED_BUCKET = frozenset({
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--s3proxy-backend", action="store", default="", metavar="NAME",
+        "--s3proxy-backend", action="store", default="", metavar="NAMES",
         help="backend under test: azureblob, gcs, localstack, nio2 or swift."
              " Its " + BACKEND_MARKER_PREFIX + "NAME marker becomes a strict"
              " expected failure, as " + COMMON_MARKER + " always does."
+             " Accepts a comma-separated list, for a lane that is one"
+             " backend in general and a narrower one where they differ:"
+             " the transient and filesystem stores share nio2 and part"
+             " company over versioning."
              " Omit to expect only the backend-independent failures.")
 
 
 def pytest_collection_modifyitems(config, items):
     expected = {COMMON_MARKER}
-    backend = config.getoption("--s3proxy-backend")
-    if backend:
-        expected.add(BACKEND_MARKER_PREFIX + backend)
+    for backend in config.getoption("--s3proxy-backend").split(","):
+        backend = backend.strip()
+        if backend:
+            expected.add(BACKEND_MARKER_PREFIX + backend)
 
     kept = []
     deselected = []

@@ -1570,6 +1570,9 @@ def test_bucket_list_return_data():
 
 
 @pytest.mark.fails_on_dbstore
+# re-creating a bucket you own answers 200 in S3's us-east-1 and
+# BucketAlreadyOwnedByYou in s3proxy
+@pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_bucket_list_return_data_versioning():
     bucket_name = get_new_bucket()
@@ -1798,6 +1801,9 @@ def _make_objs_dict(key_names):
     objs_dict = {'Objects': objs_list}
     return objs_dict
 
+# re-creating a bucket you own answers 200 in S3's us-east-1 and
+# BucketAlreadyOwnedByYou in s3proxy
+@pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioning_concurrent_multi_object_delete():
     num_objects = 5
@@ -3606,10 +3612,11 @@ def test_object_raw_get_object_acl():
     assert error_code == 'AccessDenied'
 
 @pytest.mark.versioning
-# needs a versioned bucket, which only the aws-s3-sdk backend provides
+# needs a versioned bucket, which the aws-s3-sdk and transient backends
+# provide and the rest do not
 @pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.fails_on_s3proxy_swift
 def test_object_put_acl_mtime():
     key = 'foo'
@@ -8881,6 +8888,9 @@ def test_versioning_multi_object_delete_with_marker_create():
     assert delete_marker_version_id == delete_markers[0]['VersionId']
     assert key == delete_markers[0]['Key']
 
+# s3proxy's BlobStore ACL operations carry no versionId, so it cannot
+# answer for one version of a key
+@pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioned_object_acl():
     bucket_name = get_new_bucket()
@@ -8950,6 +8960,9 @@ def test_versioned_object_acl():
     check_grants(grants, default_policy)
 
 @pytest.mark.fails_on_dbstore
+# s3proxy's BlobStore ACL operations carry no versionId, so it cannot
+# answer for one version of a key
+@pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioned_object_acl_no_version_specified():
     bucket_name = get_new_bucket()
