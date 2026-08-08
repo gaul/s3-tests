@@ -20400,7 +20400,12 @@ def test_delete_objects_current_if_match():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'ETag': 'badetag'}]})
     assert 'PreconditionFailed' == response['Errors'][0]['Code']
 
-@pytest.mark.fails_on_s3proxy
+# the transient store versions and answers these per key; the rest
+# either cannot version the bucket or refuse a conditional delete
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_filesystem
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20475,7 +20480,12 @@ def test_delete_objects_current_if_match_last_modified_time():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'LastModifiedTime': badmtime}]})
     assert 'PreconditionFailed' == response['Errors'][0]['Code']
 
-@pytest.mark.fails_on_s3proxy
+# the transient store versions and answers these per key; the rest
+# either cannot version the bucket or refuse a conditional delete
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_filesystem
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20553,7 +20563,12 @@ def test_delete_objects_current_if_match_size():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'Size': badsize}]})
     assert 'PreconditionFailed' == response['Errors'][0]['Code']
 
-@pytest.mark.fails_on_s3proxy
+# the transient store versions and answers these per key; the rest
+# either cannot version the bucket or refuse a conditional delete
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_filesystem
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
