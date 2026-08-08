@@ -1696,7 +1696,9 @@ def _make_objs_dict(key_names):
     return objs_dict
 
 # re-creating a bucket you own answers 200 in S3's us-east-1 and
-# BucketAlreadyOwnedByYou in s3proxy
+# BucketAlreadyOwnedByYou in s3proxy.  On the LocalStack lane the outcome
+# depends on whether the threads overlap, so run-s3-tests.sh deselects it
+# there rather than expecting either result.
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioning_concurrent_multi_object_delete():
@@ -8494,6 +8496,7 @@ def test_versioning_multi_object_delete_with_marker_create():
 
 # s3proxy's BlobStore ACL operations carry no versionId, so it cannot
 # answer for one version of a key
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioned_object_acl():
@@ -8566,6 +8569,7 @@ def test_versioned_object_acl():
 @pytest.mark.fails_on_dbstore
 # s3proxy's BlobStore ACL operations carry no versionId, so it cannot
 # answer for one version of a key
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 def test_versioned_object_acl_no_version_specified():
@@ -12701,6 +12705,9 @@ def test_versioning_bucket_atomic_upload_return_version_id():
     assert not 'VersionId' in response
 
 @pytest.mark.multipart
+# LocalStack names the null version in the completion of an upload to a
+# suspended bucket; S3 names no version there
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_versioning_bucket_multipart_upload_return_version_id():
     content_type='text/bla'
@@ -19971,6 +19978,9 @@ def test_multipart_put_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# LocalStack answers a named If-None-Match with 501 as AWS does, where
+# this expects rgw's 412
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_put_current_object_if_none_match():
     client = get_client()
@@ -20001,6 +20011,9 @@ def test_put_current_object_if_none_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# LocalStack answers a named If-None-Match with 501 as AWS does, where
+# this expects rgw's 412
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_multipart_put_current_object_if_none_match():
     client = get_client()
@@ -20029,6 +20042,9 @@ def test_multipart_put_current_object_if_none_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# LocalStack answers a named If-None-Match with 501 as AWS does, where
+# this expects rgw's 412
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_put_current_object_if_match():
     client = get_client()
@@ -20061,6 +20077,9 @@ def test_put_current_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# LocalStack answers a named If-None-Match with 501 as AWS does, where
+# this expects rgw's 412
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_multipart_put_current_object_if_match():
     client = get_client()
@@ -20089,6 +20108,9 @@ def test_multipart_put_current_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# LocalStack answers a named If-None-Match with 501 as AWS does, where
+# this expects rgw's 412
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_put_object_current_if_match():
     client = get_client()
