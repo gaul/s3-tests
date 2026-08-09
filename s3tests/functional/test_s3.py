@@ -3392,6 +3392,8 @@ def test_put_object_ifmatch_nonexisted_failed():
     assert error_code == 'NoSuchKey'
 
 @pytest.mark.fails_on_aws
+# LocalStack refuses a named If-None-Match as unimplemented, as AWS does
+@pytest.mark.fails_on_s3proxy_localstack
 # s3proxy answers a conditional write NotImplemented on Swift, whose only
 # native form is If-None-Match: *.  Emulating the rest means a HEAD then an
 # unconditional write, which is not the guarantee the caller asked for.
@@ -3414,6 +3416,8 @@ def test_put_object_ifnonmatch_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+# LocalStack refuses a named If-None-Match as unimplemented, as AWS does
+@pytest.mark.fails_on_s3proxy_localstack
 # s3proxy answers a conditional write NotImplemented on Swift, whose only
 # native form is If-None-Match: *.  Emulating the rest means a HEAD then an
 # unconditional write, which is not the guarantee the caller asked for.
@@ -22453,6 +22457,9 @@ def test_multipart_put_object_suspended_if_none_match():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete, answering
+# NotImplemented where these expect the precondition to fail
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22549,6 +22556,9 @@ def test_delete_object_version_if_match():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete, answering
+# NotImplemented where these expect the precondition to fail
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22624,6 +22634,9 @@ def test_delete_object_version_if_match_last_modified_time():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete, answering
+# NotImplemented where these expect the precondition to fail
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22698,6 +22711,10 @@ def test_delete_object_version_if_match_size():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete: asked for a batch
+# it ignores the condition and deletes anyway, and s3proxy sends these one
+# key at a time, which it refuses as unimplemented
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22748,6 +22765,10 @@ def test_delete_objects_current_if_match():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete: asked for a batch
+# it ignores the condition and deletes anyway, and s3proxy sends these one
+# key at a time, which it refuses as unimplemented
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22775,6 +22796,10 @@ def test_delete_objects_version_if_match():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete: asked for a batch
+# it ignores the condition and deletes anyway, and s3proxy sends these one
+# key at a time, which it refuses as unimplemented
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22830,6 +22855,10 @@ def test_delete_objects_current_if_match_last_modified_time():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete: asked for a batch
+# it ignores the condition and deletes anyway, and s3proxy sends these one
+# key at a time, which it refuses as unimplemented
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22860,6 +22889,10 @@ def test_delete_objects_version_if_match_last_modified_time():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete: asked for a batch
+# it ignores the condition and deletes anyway, and s3proxy sends these one
+# key at a time, which it refuses as unimplemented
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22915,6 +22948,10 @@ def test_delete_objects_current_if_match_size():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
+# LocalStack does not implement the conditional delete: asked for a batch
+# it ignores the condition and deletes anyway, and s3proxy sends these one
+# key at a time, which it refuses as unimplemented
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
