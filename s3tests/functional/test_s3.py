@@ -7151,6 +7151,8 @@ def test_multipart_get_part_storage_class():
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+# s3proxy answers a partNumber read of a multipart object NotImplemented.
+@pytest.mark.fails_on_s3proxy
 def test_multipart_sse_c_get_part():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12045,6 +12047,8 @@ def test_encryption_sse_c_present():
     assert status == 400
 
 @pytest.mark.encryption
+# LocalStack answers the wrong key 403 where S3 answers 400.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_encryption_sse_c_other_key():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12343,6 +12347,8 @@ def test_encryption_sse_c_multipart_invalid_chunks_2():
 @pytest.mark.encryption
 @pytest.mark.multipart
 @pytest.mark.fails_on_s3proxy_azureblob
+# LocalStack answers the wrong key 403 where S3 answers 400.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_encryption_sse_c_multipart_bad_download():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12445,6 +12451,8 @@ def test_encryption_sse_c_post_object_authenticated_request():
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+# s3proxy implements no bucket policy; the setup's PutBucketPolicy is 501.
+@pytest.mark.fails_on_s3proxy
 def test_encryption_sse_c_enforced_with_bucket_policy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12475,6 +12483,8 @@ def test_encryption_sse_c_enforced_with_bucket_policy():
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+# s3proxy implements no bucket policy; the setup's PutBucketPolicy is 501.
+@pytest.mark.fails_on_s3proxy
 def test_encryption_sse_c_deny_algo_with_bucket_policy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12577,6 +12587,9 @@ def test_sse_kms_present():
     assert body == data
 
 @pytest.mark.encryption
+# LocalStack encrypts under the account's own key when the request names
+# none, the way AWS documents; this test wants the refusal rgw answers.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_sse_kms_no_key():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16636,6 +16649,8 @@ def test_put_bucket_encryption_s3():
     _put_bucket_encryption_s3(client, bucket_name)
 
 @pytest.mark.encryption
+# The unimplemented ?encryption subresource, like its sse_s3 sibling.
+@pytest.mark.fails_on_s3proxy
 def test_put_bucket_encryption_kms():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16719,6 +16734,8 @@ def test_get_bucket_encryption_s3():
 
 
 @pytest.mark.encryption
+# The unimplemented ?encryption subresource, like its sse_s3 sibling.
+@pytest.mark.fails_on_s3proxy
 def test_get_bucket_encryption_kms():
     kms_keyid = get_main_kms_keyid()
     if kms_keyid is None:
@@ -16766,6 +16783,8 @@ def test_delete_bucket_encryption_s3():
 
 
 @pytest.mark.encryption
+# The unimplemented ?encryption subresource, like its sse_s3 sibling.
+@pytest.mark.fails_on_s3proxy
 def test_delete_bucket_encryption_kms():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -23283,9 +23302,6 @@ _copy_enc_source_modes = {
             'CopySourceSSECustomerKey': 'pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=',
             'CopySourceSSECustomerKeyMD5': 'DWygnHRtgiJ77HCm+1rvHw==',
         },
-        # s3proxy refuses SSE-C everywhere: honoring a caller's key means
-        # carrying it on every read and copy, not echoing it back.
-        'marks': [pytest.mark.fails_on_s3proxy],
     },
     'sse-kms': {
         'args': {
@@ -23318,9 +23334,9 @@ _copy_enc_dest_modes = {
             r['ResponseMetadata']['HTTPHeaders']['x-amz-server-side-encryption-customer-algorithm'] == 'AES256' and
             r['ResponseMetadata']['HTTPHeaders']['x-amz-server-side-encryption-customer-key-md5'] == 'arxBvwY2V4SiOne6yppVPQ=='
         ),
-        # s3proxy refuses SSE-C everywhere: honoring a caller's key means
-        # carrying it on every read and copy, not echoing it back.
-        'marks': [pytest.mark.fails_on_s3proxy],
+        # LocalStack answers BadDigest to a copy landing under SSE-C and
+        # does not ask the parts of such an upload for the key.
+        'marks': [pytest.mark.fails_on_s3proxy_localstack],
     },
     'sse-kms': {
         'args': {
