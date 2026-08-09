@@ -16629,6 +16629,7 @@ def _put_bucket_encryption_kms(client, bucket_name):
 
 
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy
 def test_put_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16697,6 +16698,7 @@ def test_put_bucket_encryption_two_rules():
 
 
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy
 def test_get_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16741,6 +16743,7 @@ def test_get_bucket_encryption_kms():
 
 
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy
 def test_delete_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -23280,6 +23283,9 @@ _copy_enc_source_modes = {
             'CopySourceSSECustomerKey': 'pO3upElrwuEXSoFwCfnZPdSsmt/xWeFa0N9KgDijwVs=',
             'CopySourceSSECustomerKeyMD5': 'DWygnHRtgiJ77HCm+1rvHw==',
         },
+        # s3proxy refuses SSE-C everywhere: honoring a caller's key means
+        # carrying it on every read and copy, not echoing it back.
+        'marks': [pytest.mark.fails_on_s3proxy],
     },
     'sse-kms': {
         'args': {
@@ -23311,7 +23317,10 @@ _copy_enc_dest_modes = {
         'assert': lambda r: (
             r['ResponseMetadata']['HTTPHeaders']['x-amz-server-side-encryption-customer-algorithm'] == 'AES256' and
             r['ResponseMetadata']['HTTPHeaders']['x-amz-server-side-encryption-customer-key-md5'] == 'arxBvwY2V4SiOne6yppVPQ=='
-        )
+        ),
+        # s3proxy refuses SSE-C everywhere: honoring a caller's key means
+        # carrying it on every read and copy, not echoing it back.
+        'marks': [pytest.mark.fails_on_s3proxy],
     },
     'sse-kms': {
         'args': {
