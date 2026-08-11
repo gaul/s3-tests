@@ -16642,15 +16642,12 @@ def _put_bucket_encryption_kms(client, bucket_name):
 
 
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy
 def test_put_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
     _put_bucket_encryption_s3(client, bucket_name)
 
 @pytest.mark.encryption
-# The unimplemented ?encryption subresource, like its sse_s3 sibling.
-@pytest.mark.fails_on_s3proxy
 def test_put_bucket_encryption_kms():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16713,7 +16710,9 @@ def test_put_bucket_encryption_two_rules():
 
 
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy
+# LocalStack buckets rest under an account-wide default the way modern AWS
+# ones do, so the fresh-bucket 404 asserted here never comes on that lane.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_get_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16734,8 +16733,9 @@ def test_get_bucket_encryption_s3():
 
 
 @pytest.mark.encryption
-# The unimplemented ?encryption subresource, like its sse_s3 sibling.
-@pytest.mark.fails_on_s3proxy
+# LocalStack buckets rest under an account-wide default the way modern AWS
+# ones do, so the fresh-bucket 404 asserted here never comes on that lane.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_get_bucket_encryption_kms():
     kms_keyid = get_main_kms_keyid()
     if kms_keyid is None:
@@ -16760,7 +16760,9 @@ def test_get_bucket_encryption_kms():
 
 
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy
+# LocalStack answers the read after the delete with an empty configuration
+# rather than the 404 asserted here, resting on its account-wide default.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_delete_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16783,8 +16785,9 @@ def test_delete_bucket_encryption_s3():
 
 
 @pytest.mark.encryption
-# The unimplemented ?encryption subresource, like its sse_s3 sibling.
-@pytest.mark.fails_on_s3proxy
+# LocalStack answers the read after the delete with an empty configuration
+# rather than the 404 asserted here, resting on its account-wide default.
+@pytest.mark.fails_on_s3proxy_localstack
 def test_delete_bucket_encryption_kms():
     bucket_name = get_new_bucket()
     client = get_client()
