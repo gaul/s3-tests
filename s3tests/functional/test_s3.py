@@ -1469,6 +1469,7 @@ def test_bucket_list_return_data():
 # BucketAlreadyOwnedByYou in s3proxy
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_gcs
 def test_bucket_list_return_data_versioning():
     bucket_name = get_new_bucket()
     check_configure_versioning_retry(bucket_name, "Enabled", "Enabled")
@@ -1701,6 +1702,7 @@ def _make_objs_dict(key_names):
 # there rather than expecting either result.
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_concurrent_multi_object_delete():
     num_objects = 5
     num_versions_per_object = 3
@@ -3511,11 +3513,10 @@ def test_object_raw_get_object_acl():
     assert status == 403
     assert error_code == 'AccessDenied'
 
-# needs a versioned bucket, which the aws-s3-sdk and transient backends
-# provide and the rest do not
+# needs a versioned bucket, which the aws-s3-sdk, google-cloud-storage
+# and transient backends provide and the rest do not
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
-@pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_swift
 def test_object_put_acl_mtime():
     key = 'foo'
@@ -7903,6 +7904,9 @@ def test_ranged_request_empty_object():
     assert error_code == 'InvalidRange'
 
 @pytest.mark.versioning
+# GCS versioning is on or off, so the google-cloud-storage backend
+# refuses Suspended with NotImplemented
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_bucket_create_suspend():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -8054,6 +8058,10 @@ def test_versioning_stack_delete_merkers():
     assert len(delete_markers) == 3
 
 @pytest.mark.versioning
+# objects written before versioning was enabled keep their GCS
+# generations as ids, so the null version names nothing on the
+# google-cloud-storage backend
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_plain_null_version_removal():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -8075,6 +8083,10 @@ def test_versioning_obj_plain_null_version_removal():
     assert not 'Versions' in response
 
 @pytest.mark.versioning
+# objects written before versioning was enabled keep their GCS
+# generations as ids, so the null version names nothing on the
+# google-cloud-storage backend
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_plain_null_version_overwrite():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -8109,6 +8121,9 @@ def test_versioning_obj_plain_null_version_overwrite():
     assert not 'Versions' in response
 
 @pytest.mark.versioning
+# GCS versioning is on or off, so the google-cloud-storage backend
+# refuses Suspended with NotImplemented
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_plain_null_version_overwrite_suspended():
     bucket_name = get_new_bucket()
     check_versioning(bucket_name, None)
@@ -8175,6 +8190,9 @@ def overwrite_suspended_versioning_obj(client, bucket_name, key, version_ids, co
 
 
 @pytest.mark.versioning
+# GCS versioning is on or off, so the google-cloud-storage backend
+# refuses Suspended with NotImplemented
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_suspend_versions():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8210,6 +8228,9 @@ def test_versioning_obj_suspend_versions():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+# GCS versioning is on or off, so the google-cloud-storage backend
+# refuses Suspended with NotImplemented
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_suspended_copy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12688,6 +12709,9 @@ def test_delete_tags_obj_public():
     assert len(response['TagSet']) == 0
 
 @pytest.mark.versioning
+# the Suspended arm: GCS versioning is on or off, so the
+# google-cloud-storage backend refuses Suspended with NotImplemented
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_bucket_atomic_upload_return_version_id():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12722,6 +12746,9 @@ def test_versioning_bucket_atomic_upload_return_version_id():
 # suspended bucket; S3 names no version there
 @pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
+# the Suspended arm: GCS versioning is on or off, so the
+# google-cloud-storage backend refuses Suspended with NotImplemented
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_bucket_multipart_upload_return_version_id():
     content_type='text/bla'
     objlen = 30 * 1024 * 1024
@@ -19844,6 +19871,9 @@ def test_delete_marker_versioned():
 @pytest.mark.delete_marker
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+# GCS versioning is on or off, so the google-cloud-storage backend
+# refuses Suspended with NotImplemented
+@pytest.mark.fails_on_s3proxy_gcs
 def test_delete_marker_suspended():
     bucket = get_new_bucket()
     client = get_client()
@@ -19960,11 +19990,10 @@ def failing_conditional_multipart_upload(expected_failure, client, bucket, key, 
 @pytest.mark.fails_on_dbstore
 # s3proxy hands a conditional completion to the store rather than checking it
 # beforehand, which would only hold while nothing else writes the same key.
-# GCS compose can only require that the target be absent and Swift's manifest
-# PUT honours only If-None-Match: *, so neither can answer a condition naming
-# an ETag and s3proxy answers NotImplemented; LocalStack answers the same, of
-# its own accord.
-@pytest.mark.fails_on_s3proxy_gcs
+# Swift's manifest PUT honours only If-None-Match: *, so it cannot answer a
+# condition naming an ETag and s3proxy answers NotImplemented; LocalStack
+# answers the same, of its own accord.  GCS resolves the ETag to a
+# generation and pins the compose to it.
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_s3proxy_localstack
 def test_multipart_put_object_if_match():
