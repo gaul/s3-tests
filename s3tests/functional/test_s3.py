@@ -21003,9 +21003,10 @@ _copy_enc_dest_modes = {
             r['ResponseMetadata']['HTTPHeaders']['x-amz-server-side-encryption-customer-algorithm'] == 'AES256' and
             r['ResponseMetadata']['HTTPHeaders']['x-amz-server-side-encryption-customer-key-md5'] == 'arxBvwY2V4SiOne6yppVPQ=='
         ),
-        # LocalStack answers BadDigest to a copy landing under SSE-C and
-        # does not ask the parts of such an upload for the key.
-        'marks': [pytest.mark.fails_on_s3proxy_localstack],
+        # The BadDigest a copy landing under SSE-C once earned here was
+        # s3proxy's own follow-up HEAD presenting no key, not the backend;
+        # the multipart gap that remains is marked per-test in
+        # generate_copy_part_enc_params.
     },
     'sse-kms': {
         'args': {
@@ -21212,7 +21213,11 @@ def generate_copy_part_enc_params():
     for source_key in _copy_enc_source_modes.keys():
         for dest_key in _copy_enc_dest_modes.keys():
             source_marks = _copy_enc_source_modes[source_key].get('marks', [])
-            dest_marks = _copy_enc_dest_modes[dest_key].get('marks', [])
+            dest_marks = list(_copy_enc_dest_modes[dest_key].get('marks', []))
+            if dest_key == 'sse-c':
+                # LocalStack does not ask the parts -- or the completion --
+                # of an SSE-C multipart upload for the key.
+                dest_marks.append(pytest.mark.fails_on_s3proxy_localstack)
             for source_sc in sc:
                 for dest_sc in sc:
                     additional_marks = []
