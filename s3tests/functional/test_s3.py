@@ -11030,8 +11030,10 @@ def test_encryption_sse_c_present():
     assert status == 400
 
 @pytest.mark.encryption
-# LocalStack answers the wrong key 403 where S3 answers 400.
+# The 400 asserted here is radosgw's: AWS answers a wrong-key read with
+# 403 AccessDenied, and LocalStack and MiniStack follow it.
 @pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_encryption_sse_c_other_key():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -11330,8 +11332,10 @@ def test_encryption_sse_c_multipart_invalid_chunks_2():
 @pytest.mark.encryption
 @pytest.mark.multipart
 @pytest.mark.fails_on_s3proxy_azureblob
-# LocalStack answers the wrong key 403 where S3 answers 400.
+# The 400 asserted here is radosgw's: AWS answers a wrong-key read with
+# 403 AccessDenied, and LocalStack and MiniStack follow it.
 @pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_encryption_sse_c_multipart_bad_download():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -21215,8 +21219,8 @@ def generate_copy_part_enc_params():
             source_marks = _copy_enc_source_modes[source_key].get('marks', [])
             dest_marks = list(_copy_enc_dest_modes[dest_key].get('marks', []))
             if dest_key == 'sse-c':
-                # LocalStack does not ask the parts -- or the completion --
-                # of an SSE-C multipart upload for the key.
+                # LocalStack gates the parts of an SSE-C multipart upload
+                # but not the completion, which AWS also asks for the key.
                 dest_marks.append(pytest.mark.fails_on_s3proxy_localstack)
             for source_sc in sc:
                 for dest_sc in sc:
