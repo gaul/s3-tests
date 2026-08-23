@@ -20257,7 +20257,11 @@ def test_delete_object_current_if_match():
     client.delete_object(Bucket=bucket, Key=key, VersionId=version)
     client.delete_object(Bucket=bucket, Key=key, IfMatch='*')
 
-@pytest.mark.fails_on_s3proxy
+# Neither the google-cloud-storage backend nor LocalStack implements the
+# conditional delete, answering NotImplemented where these expect the
+# precondition to fail
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20339,7 +20343,11 @@ def test_delete_object_current_if_match_last_modified_time():
     e = assert_raises(ClientError, client.delete_object, Bucket=bucket, Key=key, IfMatchLastModifiedTime=badmtime)
     assert (412, 'PreconditionFailed') == _get_status_and_error_code(e.response)
 
-@pytest.mark.fails_on_s3proxy
+# Neither the google-cloud-storage backend nor LocalStack implements the
+# conditional delete, answering NotImplemented where these expect the
+# precondition to fail
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
@@ -20414,7 +20422,11 @@ def test_delete_object_current_if_match_size():
     e = assert_raises(ClientError, client.delete_object, Bucket=bucket, Key=key, IfMatchSize=badsize)
     assert (412, 'PreconditionFailed') == _get_status_and_error_code(e.response)
 
-@pytest.mark.fails_on_s3proxy
+# Neither the google-cloud-storage backend nor LocalStack implements the
+# conditional delete, answering NotImplemented where these expect the
+# precondition to fail
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
