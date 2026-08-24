@@ -5690,6 +5690,8 @@ def test_list_buckets_bad_auth():
     status, error_code = _get_status_and_error_code(e.response)
     assert status == 403
 
+# MiniStack ignores MaxBuckets and answers with every bucket
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_dbstore
 def test_list_buckets_paginated():
     client = get_client()
@@ -16744,6 +16746,9 @@ def test_put_bucket_encryption_two_rules():
 # LocalStack buckets rest under an account-wide default the way modern AWS
 # ones do, so the fresh-bucket 404 asserted here never comes on that lane.
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack rests on the same account-wide default, so the fresh-bucket
+# 404 asserted here never comes on its lane either
+@pytest.mark.fails_on_s3proxy_ministack
 def test_get_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16767,6 +16772,9 @@ def test_get_bucket_encryption_s3():
 # LocalStack buckets rest under an account-wide default the way modern AWS
 # ones do, so the fresh-bucket 404 asserted here never comes on that lane.
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack rests on the same account-wide default, so the fresh-bucket
+# 404 asserted here never comes on its lane either
+@pytest.mark.fails_on_s3proxy_ministack
 def test_get_bucket_encryption_kms():
     kms_keyid = get_main_kms_keyid()
     if kms_keyid is None:
@@ -16794,6 +16802,9 @@ def test_get_bucket_encryption_kms():
 # LocalStack answers the read after the delete with an empty configuration
 # rather than the 404 asserted here, resting on its account-wide default.
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack rests on the same account-wide default and answers the read
+# after the delete the same way
+@pytest.mark.fails_on_s3proxy_ministack
 def test_delete_bucket_encryption_s3():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16819,6 +16830,9 @@ def test_delete_bucket_encryption_s3():
 # LocalStack answers the read after the delete with an empty configuration
 # rather than the 404 asserted here, resting on its account-wide default.
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack rests on the same account-wide default and answers the read
+# after the delete the same way
+@pytest.mark.fails_on_s3proxy_ministack
 def test_delete_bucket_encryption_kms():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -22517,6 +22531,10 @@ def test_multipart_put_object_suspended_if_none_match():
 # LocalStack does not implement the conditional delete, answering
 # NotImplemented where these expect the precondition to fail
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack does implement the conditional delete, but answers NoSuchKey
+# where deleting what is already gone should succeed, and ignores the
+# size and last-modified-time conditions outright
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22589,6 +22607,10 @@ def test_delete_object_current_if_match():
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack does implement the conditional delete, but answers NoSuchKey
+# where deleting what is already gone should succeed, and ignores the
+# size and last-modified-time conditions outright
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22625,6 +22647,10 @@ def test_delete_object_version_if_match():
 # LocalStack does not implement the conditional delete, answering
 # NotImplemented where these expect the precondition to fail
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack does implement the conditional delete, but answers NoSuchKey
+# where deleting what is already gone should succeed, and ignores the
+# size and last-modified-time conditions outright
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22682,6 +22708,10 @@ def test_delete_object_current_if_match_last_modified_time():
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack does implement the conditional delete, but answers NoSuchKey
+# where deleting what is already gone should succeed, and ignores the
+# size and last-modified-time conditions outright
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22712,6 +22742,10 @@ def test_delete_object_version_if_match_last_modified_time():
 # LocalStack does not implement the conditional delete, answering
 # NotImplemented where these expect the precondition to fail
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack does implement the conditional delete, but answers NoSuchKey
+# where deleting what is already gone should succeed, and ignores the
+# size and last-modified-time conditions outright
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22768,6 +22802,10 @@ def test_delete_object_current_if_match_size():
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack does implement the conditional delete, but answers NoSuchKey
+# where deleting what is already gone should succeed, and ignores the
+# size and last-modified-time conditions outright
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22884,6 +22922,9 @@ def test_delete_objects_version_if_match():
 # it ignores the condition and deletes anyway, and s3proxy sends these one
 # key at a time, which it refuses as unimplemented
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack ignores the size and last-modified-time conditions in a batch
+# too: it deletes anyway and reports no Errors
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22943,6 +22984,9 @@ def test_delete_objects_current_if_match_last_modified_time():
 # it ignores the condition and deletes anyway, and s3proxy sends these one
 # key at a time, which it refuses as unimplemented
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack ignores the size and last-modified-time conditions in a batch
+# too: it deletes anyway and reports no Errors
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -22977,6 +23021,9 @@ def test_delete_objects_version_if_match_last_modified_time():
 # it ignores the condition and deletes anyway, and s3proxy sends these one
 # key at a time, which it refuses as unimplemented
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack ignores the size and last-modified-time conditions in a batch
+# too: it deletes anyway and reports no Errors
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -23036,6 +23083,9 @@ def test_delete_objects_current_if_match_size():
 # it ignores the condition and deletes anyway, and s3proxy sends these one
 # key at a time, which it refuses as unimplemented
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack ignores the size and last-modified-time conditions in a batch
+# too: it deletes anyway and reports no Errors
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
