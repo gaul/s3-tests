@@ -22524,7 +22524,6 @@ def test_multipart_put_object_suspended_if_none_match():
     response = successful_conditional_multipart_upload(client, bucket, key, IfNoneMatch='*')
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
-@pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
 # LocalStack does not implement the conditional delete, answering
 # NotImplemented where these expect the precondition to fail
@@ -22829,7 +22828,6 @@ def test_delete_object_version_if_match_size():
     response = client.delete_object(Bucket=bucket, Key=key, VersionId=version, IfMatchSize=badsize)
     assert 204 == response['ResponseMetadata']['HTTPStatusCode']
 
-@pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
 # LocalStack does not implement the conditional delete: asked for a batch
 # it ignores the condition and deletes anyway, and s3proxy sends these one
