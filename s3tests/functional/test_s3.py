@@ -4055,9 +4055,12 @@ def check_grants(got, want):
     assert len(got) == len(want)
 
     # There are instances when got does not match due the order of item.
+    # A group grantee carries no DisplayName, and S3 itself returns the
+    # owner's grant ahead of the group's, so sort those to one end rather
+    # than comparing None against a name.
     if got[0]["Grantee"].get("DisplayName"):
-        got.sort(key=lambda x: x["Grantee"].get("DisplayName"))
-        want.sort(key=lambda x: x["DisplayName"])
+        got.sort(key=lambda x: x["Grantee"].get("DisplayName") or "")
+        want.sort(key=lambda x: x["DisplayName"] or "")
 
     for g, w in zip(got, want):
         w = dict(w)
