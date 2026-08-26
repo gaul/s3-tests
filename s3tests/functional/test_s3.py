@@ -5584,8 +5584,6 @@ def test_list_buckets_bad_auth():
     status, error_code = _get_status_and_error_code(e.response)
     assert status == 403
 
-# MiniStack ignores MaxBuckets and answers with every bucket
-@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_dbstore
 def test_list_buckets_paginated():
     client = get_client()
