@@ -8532,6 +8532,9 @@ def test_versioning_multi_object_delete_with_marker_create():
     assert key == delete_markers[0]['Key']
 
 @pytest.mark.versioning
+# Azure grants read at the container, so a per-object public-read ACL,
+# of a version or the current object, has nowhere to live
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioned_object_acl():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8601,6 +8604,9 @@ def test_versioned_object_acl():
 
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+# Azure grants read at the container, so a per-object public-read ACL,
+# of a version or the current object, has nowhere to live
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioned_object_acl_no_version_specified():
     bucket_name = get_new_bucket()
     client = get_client()
