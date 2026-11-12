@@ -5935,6 +5935,9 @@ def test_object_copy_key_not_found():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+# Azurite refuses the SAS for one blob version (sr=bv) that the azureblob
+# backend signs a copy source naming a version with; Azure accepts it
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_copy_versioned_bucket():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -6001,6 +6004,9 @@ def test_object_copy_versioned_bucket():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+# Azurite refuses the SAS for one blob version (sr=bv) that the azureblob
+# backend signs a copy source naming a version with; Azure accepts it
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_object_copy_versioned_url_encoding():
     bucket = get_new_bucket_resource()
     check_configure_versioning_retry(bucket.name, "Enabled", "Enabled")
@@ -8403,6 +8409,9 @@ def test_versioning_obj_list_marker():
 @pytest.mark.copy
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+# Azurite refuses the SAS for one blob version (sr=bv) that the azureblob
+# backend signs a copy source naming a version with; Azure accepts it
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioning_copy_obj_version():
     bucket_name = get_new_bucket()
     client = get_client()
