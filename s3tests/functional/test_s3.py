@@ -1468,6 +1468,7 @@ def test_bucket_list_return_data():
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 @pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_bucket_list_return_data_versioning():
     bucket_name = get_new_bucket()
     check_configure_versioning_retry(bucket_name, "Enabled", "Enabled")
@@ -1701,6 +1702,7 @@ def _make_objs_dict(key_names):
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 @pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_azureblob
 def test_versioning_concurrent_multi_object_delete():
     num_objects = 5
     num_versions_per_object = 3
