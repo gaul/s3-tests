@@ -1050,7 +1050,6 @@ def test_bucket_listv2_maxkeys_one():
     keys = _get_keys(response)
     assert keys == key_names[1:]
 
-@pytest.mark.fails_on_s3proxy_azureblob
 def test_bucket_list_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
     bucket_name = _create_objects(keys=key_names)
@@ -1062,7 +1061,6 @@ def test_bucket_list_maxkeys_zero():
     keys = _get_keys(response)
     assert keys == []
 
-@pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.list_objects_v2
 def test_bucket_listv2_maxkeys_zero():
     key_names = ['bar', 'baz', 'foo', 'quxx']
@@ -20254,10 +20252,18 @@ def test_delete_object_if_match():
     client.put_object(Bucket=bucket, Key=key)
     client.delete_object(Bucket=bucket, Key=key, IfMatch='*')
 
-@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# enables versioning first, so it runs only on the lanes that version;
+# of those the nio2 store and the emulators behind the gcs, localstack and
+# ministack lanes answer these conditions other than rgw does, and only the
+# versioned azureblob store passes
+@pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_delete_object_current_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -20544,10 +20550,18 @@ def test_delete_objects_if_match():
     response = client.delete_objects(Bucket=bucket, Delete={'Objects': [{'Key': key, 'ETag': 'badetag'}]})
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
-@pytest.mark.fails_on_s3proxy
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
+# enables versioning first, so it runs only on the lanes that version;
+# of those the nio2 store and the emulators behind the gcs, localstack and
+# ministack lanes answer these conditions other than rgw does, and only the
+# versioned azureblob store passes
+@pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_delete_objects_current_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
