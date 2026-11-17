@@ -1962,7 +1962,6 @@ def test_object_write_check_etag():
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
     assert response['ETag'] == '"37b51d194a7513e45b56f6524f2d51f2"'
 
-@pytest.mark.fails_on_s3proxy_swift
 def test_object_write_cache_control():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1974,7 +1973,6 @@ def test_object_write_cache_control():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_swift
 def test_object_write_expires():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -3781,7 +3779,6 @@ def test_object_raw_get_x_amz_expires_out_positive_range():
 # object reports it correctly: openstack4j's HEAD paths surface only the
 # X-Object-Meta- headers, so s3proxy never sees the content-* ones.  Reading
 # them would mean bypassing openstack4j the way getBlob already does.
-@pytest.mark.fails_on_s3proxy_swift
 def test_object_content_encoding_aws_chunked():
     client = get_client()
     bucket = get_new_bucket(client)
