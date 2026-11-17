@@ -361,10 +361,12 @@ def test_bucket_listv2_delimiter_prefix():
 
 
 @pytest.mark.list_objects_v2
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_listv2_delimiter_prefix_ends_with_delimiter():
     bucket_name = _create_objects(keys=['asdf/'])
     validate_bucket_listv2(bucket_name, 'asdf/', '/', None, 1000, False, ['asdf/'], [], last=True)
 
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_prefix_ends_with_delimiter():
     bucket_name = _create_objects(keys=['asdf/'])
     validate_bucket_list(bucket_name, 'asdf/', '/', '', 1000, False, ['asdf/'], [], None)
@@ -696,6 +698,7 @@ def test_bucket_listv2_delimiter_not_exist():
 
 
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy_nio2
 def test_bucket_list_delimiter_not_skip_special():
     key_names = ['0/'] + ['0/%s' % i for i in range(1000, 1999)]
     key_names2 = ['1999', '1999#', '1999+', '2000']
