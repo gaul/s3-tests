@@ -25,6 +25,13 @@ FILES = ['s3tests/functional/test_s3.py', 's3tests/functional/test_headers.py',
          's3tests/functional/__init__.py']
 
 
+def decorator(item):
+    """The decorator line of an item, without the comments above it or
+    one trailing it."""
+    line = next((x for x in item.split('\n') if x.startswith('@')), item)
+    return line.split('#')[0].strip()
+
+
 def decorators(rev, path):
     text = subprocess.run(['git', 'show', rev + ':' + path],
                           capture_output=True, text=True).stdout
@@ -39,7 +46,10 @@ def main():
         print('== %s: tests old-base %d, old-fork %d, new-base %d, new-fork %d'
               % (path, len(ob), len(ot), len(nb), len(nt)))
         for k, items in nt.items():
-            dup = sorted({x for x in items if items.count(x) > 1})
+            # By the decorator alone: the same marker under two different
+            # comments is still a duplicate.
+            names = [decorator(x) for x in items]
+            dup = sorted({n for n in names if names.count(n) > 1})
             if dup:
                 print('  DUP', k[0], dup)
         for k in ot:
