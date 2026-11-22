@@ -17515,7 +17515,6 @@ def test_object_checksum_sha256():
     assert error_code == 'BadDigest'
 
 @pytest.mark.checksum
-@pytest.mark.fails_on_s3proxy
 def test_object_checksum_sha512():
     bucket = get_new_bucket()
     client = get_client()
@@ -17607,7 +17606,6 @@ def test_object_checksum_xxhash128():
     assert error_code == 'BadDigest'
 
 @pytest.mark.checksum
-@pytest.mark.fails_on_s3proxy
 def test_object_checksum_md5():
     bucket = get_new_bucket()
     client = get_client()
