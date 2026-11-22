@@ -14,3 +14,6 @@
 /venv
 
 config.yaml
+
+# tools/rebase/runlane.sh results
+lane-results/
