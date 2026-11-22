@@ -8312,8 +8312,6 @@ def test_versioning_obj_create_read_remove():
     _do_test_create_remove_versions(client, bucket_name, key, num_versions, 3, 3)
 
 @pytest.mark.versioning
-@pytest.mark.fails_on_s3proxy_nio2
-@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_create_read_remove_head():
     bucket_name = get_new_bucket()
 
