@@ -130,6 +130,17 @@ def nuke_bucket(client, bucket):
         delete = client.delete_objects(Bucket=bucket,
                 Delete={'Objects': objects, 'Quiet': True})
 
+        # A GOVERNANCE retention gives way to the bypass.  S3 refuses the
+        # bypass on a bucket without object lock, and s3proxy on a store
+        # without it, so it is sent only for what a lock has just refused.
+        denied = [{'Key': err['Key'], 'VersionId': err['VersionId']}
+                  for err in delete.get('Errors', [])
+                  if err.get('Code') == 'AccessDenied']
+        if denied:
+            delete = client.delete_objects(Bucket=bucket,
+                    Delete={'Objects': denied, 'Quiet': True},
+                    BypassGovernanceRetention=True)
+
         # check for object locks on 403 AccessDenied errors
         for err in delete.get('Errors', []):
             if err.get('Code') != 'AccessDenied':
@@ -154,7 +165,9 @@ locked for {} more seconds, not waiting for \
 bucket cleanup'.format(bucket, delta.total_seconds()))
             print('nuke_bucket', bucket, 'waiting', delta.total_seconds(),
                     'seconds for object locks to expire')
-            time.sleep(delta.total_seconds())
+            # a second over, for a service that keeps the date to the
+            # second and still holds the object at the boundary
+            time.sleep(delta.total_seconds() + 1)
 
         for objects in list_versions(client, bucket, batch_size):
             client.delete_objects(Bucket=bucket,

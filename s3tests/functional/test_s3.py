@@ -14918,6 +14918,9 @@ def test_object_lock_put_obj_lock_with_days_and_years():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
+# s3proxy refuses the period as S3 does, InvalidArgument; this expects the
+# code RGW has for it
+@pytest.mark.fails_on_s3proxy_localstack
 def test_object_lock_put_obj_lock_invalid_days():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -14937,6 +14940,8 @@ def test_object_lock_put_obj_lock_invalid_days():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
+# as for the days above
+@pytest.mark.fails_on_s3proxy_localstack
 def test_object_lock_put_obj_lock_invalid_years():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -15570,6 +15575,9 @@ def test_object_lock_changing_mode_from_governance_with_bypass():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
+# LocalStack lets a GOVERNANCE retention become COMPLIANCE without the
+# bypass
+@pytest.mark.fails_on_s3proxy_localstack
 def test_object_lock_changing_mode_from_governance_without_bypass():
     bucket_name = get_new_bucket_name()
     key = 'file1'
@@ -15724,6 +15732,9 @@ def test_object_lock_compliance_retention_expiry():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
+# S3 lets a caller with the bypass remove a GOVERNANCE retention by putting
+# an empty one, and s3proxy hands it on; this expects RGW's refusal
+@pytest.mark.fails_on_s3proxy_localstack
 def test_object_lock_put_obj_retention_remove():
     bucket_name = get_new_bucket_name()
     client = get_client()
