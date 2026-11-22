@@ -1957,7 +1957,6 @@ def test_object_head_zero_bytes():
     assert response['ContentLength'] == 0
 
 @pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_gcs
 def test_object_write_check_etag():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2450,11 +2449,7 @@ def test_post_object_escaped_field_values():
     body = _get_body(response)
     assert body == 'bar'
 
-# S3Proxy passes through the opaque ETag GCS keeps rather than the hex MD5 S3
-# reports, and the redirect URL percent-encodes it, so the base64 one arrives
-# with %2B and %3D where this expects + and =.
 @pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_swift
 def test_post_object_success_redirect_action():
     bucket_name = get_new_bucket_name()
