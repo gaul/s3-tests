@@ -741,7 +741,6 @@ def test_sigv4_with_signed_content_sha256():
     assert(resp.status_code == 200)
 
 @pytest.mark.auth_aws4
-@pytest.mark.fails_on_s3proxy
 def test_sigv4_without_signed_content_sha256():
     # custom signer that excludes x-amz-content-sha256 from signed-headers
     class CustomAuth(S3SigV4Auth):
