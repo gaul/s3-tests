@@ -5901,13 +5901,11 @@ def test_object_copy_to_itself_with_metadata():
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_object_copy_to_itself_sse_c():
     _test_copy_enc(1000, 'sse-c', 'sse-c', self_copy=True)
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy
 def test_object_copy_to_itself_sse_kms():
     _test_copy_enc(1000, 'sse-kms', 'sse-kms', self_copy=True)
 
