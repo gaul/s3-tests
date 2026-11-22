@@ -16182,7 +16182,14 @@ def test_copy_object_ifnonematch_failed():
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
-@pytest.mark.fails_on_s3proxy
+# s3proxy judges these on the stores it can and on aws-s3 hands them to the
+# service; the other backends refuse a conditional copy rather than ignore
+# the condition.  The emulators behind aws-s3 do not take every form here.
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
+@pytest.mark.fails_on_s3proxy_swift
 def test_copy_object_dest_if_match(versioning, size):
     client = get_client()
     bucket = get_new_bucket(client)
@@ -16226,7 +16233,14 @@ def test_copy_object_dest_if_match(versioning, size):
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
-@pytest.mark.fails_on_s3proxy
+# s3proxy judges these on the stores it can and on aws-s3 hands them to the
+# service; the other backends refuse a conditional copy rather than ignore
+# the condition.  The emulators behind aws-s3 do not take every form here.
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
+@pytest.mark.fails_on_s3proxy_swift
 def test_copy_object_dest_if_none_match(versioning, size):
     client = get_client()
     bucket = get_new_bucket(client)
