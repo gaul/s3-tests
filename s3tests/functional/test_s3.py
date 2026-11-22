@@ -16436,7 +16436,12 @@ def test_bucket_policy_allow_notprincipal():
     assert error_code == 'InvalidArgument' or error_code == 'MalformedPolicy'
 
 
-@pytest.mark.fails_on_s3proxy
+# aws-s3 passes the public access block through; the other stores
+# keep no such setting
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_swift
 def test_get_undefined_public_block():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16483,7 +16488,12 @@ def test_get_public_block_deny_bucket_policy():
     status, error_code = _get_status_and_error_code(e.response)
     assert status == 403
 
-@pytest.mark.fails_on_s3proxy
+# aws-s3 passes the public access block through; the other stores
+# keep no such setting
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_public_block():
     #client = get_svc_client(svc='s3control', client_config=Config(s3={'addressing_style': 'path'}))
     bucket_name = get_new_bucket()
@@ -16667,7 +16677,12 @@ def test_ignore_public_acls():
     check_access_denied(alt_client.list_objects, Bucket=bucket_name)
     check_access_denied(alt_client.get_object, Bucket=bucket_name, Key='key1')
 
-@pytest.mark.fails_on_s3proxy
+# aws-s3 passes the public access block through; the other stores
+# keep no such setting
+@pytest.mark.fails_on_s3proxy_azureblob
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_swift
 def test_put_get_delete_public_block():
     bucket_name = get_new_bucket()
     client = get_client()
