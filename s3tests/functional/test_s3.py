@@ -22848,7 +22848,6 @@ def test_delete_object_if_match():
 # of those the nio2 store and the emulators behind the gcs, localstack and
 # ministack lanes answer these conditions other than rgw does, and only the
 # versioned azureblob store passes
-@pytest.mark.versioning
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_localstack
@@ -23152,7 +23151,6 @@ def test_delete_objects_if_match():
 # of those the nio2 store and the emulators behind the gcs, localstack and
 # ministack lanes answer these conditions other than rgw does, and only the
 # versioned azureblob store passes
-@pytest.mark.versioning
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_localstack
