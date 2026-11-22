@@ -8312,6 +8312,8 @@ def test_versioning_obj_create_read_remove():
     _do_test_create_remove_versions(client, bucket_name, key, num_versions, 3, 3)
 
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_nio2
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_create_read_remove_head():
     bucket_name = get_new_bucket()
 
@@ -8754,6 +8756,8 @@ def test_versioning_obj_list_marker():
 
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob_versioning
+@pytest.mark.fails_on_s3proxy_gcs
 def test_versioning_obj_list_marker_null_delete_marker():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8912,6 +8916,9 @@ def test_versioning_multi_object_delete_last_missing():
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob_versioning
+@pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_localstack
 def test_versioning_multi_object_delete_last_precondition_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16772,26 +16779,36 @@ _sse_s3_by_default = '<ApplyServerSideEncryptionByDefault><SSEAlgorithm>AES256</
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_missing_rule():
     _test_put_bucket_encryption_malformed('')
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_missing_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><ApplyServerSideEncryptionByDefault><KMSMasterKeyID>testkey-1</KMSMasterKeyID></ApplyServerSideEncryptionByDefault></Rule>')
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misspelled_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><ApplyServerSideEncryptionByDefault><SseAlgorithm>AES256</SseAlgorithm></ApplyServerSideEncryptionByDefault></Rule>')
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misplaced_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><SSEAlgorithm>AES256</SSEAlgorithm></Rule>')
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misspelled_rule():
     _test_put_bucket_encryption_malformed('<Rules>' + _sse_s3_by_default + '</Rules>')
 
@@ -16803,11 +16820,15 @@ def test_put_bucket_encryption_misspelled_blocked_encryption_types():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misspelled_encryption_type():
     _test_put_bucket_encryption_malformed('<Rule><BlockedEncryptionTypes><EncryptionTypes>SSE-C</EncryptionTypes></BlockedEncryptionTypes></Rule>')
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_two_rules():
     _test_put_bucket_encryption_malformed('<Rule>' + _sse_s3_by_default + '</Rule><Rule><BlockedEncryptionTypes><EncryptionType>SSE-C</EncryptionType></BlockedEncryptionTypes></Rule>')
 
@@ -22566,6 +22587,8 @@ def test_put_object_current_if_match():
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob_versioning
+@pytest.mark.fails_on_s3proxy_gcs
 def test_put_object_suspended_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -22597,6 +22620,8 @@ def test_put_object_suspended_if_match():
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
 @pytest.mark.versioning
+@pytest.mark.fails_on_s3proxy_azureblob_versioning
+@pytest.mark.fails_on_s3proxy_gcs
 def test_multipart_put_object_suspended_if_none_match():
     client = get_client()
     bucket = get_new_bucket(client)
