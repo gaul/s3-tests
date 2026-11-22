@@ -1162,6 +1162,7 @@ def test_head_bucket_usage():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_head_bucket_usage_multipart_incomplete():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1306,6 +1307,7 @@ def test_bucket_listv2_unordered():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_list_unordered_policy_reject():
     client = get_client()
     bucket_name = get_new_bucket(client)
@@ -1340,6 +1342,7 @@ def test_bucket_list_unordered_policy_reject():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_list_unordered_policy_require():
     client = get_client()
     bucket_name = get_new_bucket(client)
@@ -5898,11 +5901,13 @@ def test_object_copy_to_itself_with_metadata():
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_object_copy_to_itself_sse_c():
     _test_copy_enc(1000, 'sse-c', 'sse-c', self_copy=True)
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_object_copy_to_itself_sse_kms():
     _test_copy_enc(1000, 'sse-kms', 'sse-kms', self_copy=True)
 
@@ -7224,6 +7229,7 @@ def test_multipart_sse_c_get_part():
 @pytest.mark.encryption
 @pytest.mark.checksum
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_multipart_sse_c_checksum_complete():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16173,6 +16179,7 @@ def test_copy_object_ifnonematch_failed():
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
+@pytest.mark.fails_on_s3proxy
 def test_copy_object_dest_if_match(versioning, size):
     client = get_client()
     bucket = get_new_bucket(client)
@@ -16216,6 +16223,7 @@ def test_copy_object_dest_if_match(versioning, size):
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
+@pytest.mark.fails_on_s3proxy
 def test_copy_object_dest_if_none_match(versioning, size):
     client = get_client()
     bucket = get_new_bucket(client)
@@ -16789,6 +16797,7 @@ def test_put_bucket_encryption_misspelled_rule():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
+@pytest.mark.fails_on_s3proxy
 def test_put_bucket_encryption_misspelled_blocked_encryption_types():
     _test_put_bucket_encryption_malformed('<Rule>' + _sse_s3_by_default + '<BlockedEncryptionType><EncryptionType>SSE-C</EncryptionType></BlockedEncryptionType></Rule>')
 
@@ -16938,6 +16947,7 @@ _sse_c_args = {
 
 @pytest.mark.encryption
 @pytest.mark.sse_c_block_by_default
+@pytest.mark.fails_on_s3proxy
 def test_bucket_blocks_sse_c_by_default():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16956,6 +16966,7 @@ def test_bucket_blocks_sse_c_by_default():
                       **_sse_c_args)
 
 @pytest.mark.encryption
+@pytest.mark.fails_on_s3proxy
 def test_bucket_block_sse_c():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16989,6 +17000,7 @@ def test_bucket_block_sse_c():
 
 @pytest.mark.encryption
 @pytest.mark.fails_on_dbstore
+@pytest.mark.fails_on_s3proxy
 def test_bucket_block_sse_c_copy():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -17008,6 +17020,7 @@ def test_bucket_block_sse_c_copy():
     assert error_code == 'AccessDenied'
 
 @pytest.mark.encryption
+@pytest.mark.fails_on_s3proxy
 def test_bucket_unblock_sse_c():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -17025,6 +17038,7 @@ def test_bucket_unblock_sse_c():
     client.put_object(Bucket=bucket_name, Key='testobj', Body='A'*100, **_sse_c_args)
 
 @pytest.mark.encryption
+@pytest.mark.fails_on_s3proxy
 def test_bucket_block_sse_c_multipart():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -17473,6 +17487,7 @@ def test_object_checksum_sha256():
     assert error_code == 'BadDigest'
 
 @pytest.mark.checksum
+@pytest.mark.fails_on_s3proxy
 def test_object_checksum_sha512():
     bucket = get_new_bucket()
     client = get_client()
@@ -17495,6 +17510,7 @@ def test_object_checksum_sha512():
     assert error_code == 'BadDigest'
 
 @pytest.mark.checksum
+@pytest.mark.fails_on_s3proxy
 def test_object_checksum_xxhash3():
     bucket = get_new_bucket()
     client = get_client()
@@ -17517,6 +17533,7 @@ def test_object_checksum_xxhash3():
     assert error_code == 'BadDigest'
 
 @pytest.mark.checksum
+@pytest.mark.fails_on_s3proxy
 def test_object_checksum_xxhash64():
     bucket = get_new_bucket()
     client = get_client()
@@ -17539,6 +17556,7 @@ def test_object_checksum_xxhash64():
     assert error_code == 'BadDigest'
 
 @pytest.mark.checksum
+@pytest.mark.fails_on_s3proxy
 def test_object_checksum_xxhash128():
     bucket = get_new_bucket()
     client = get_client()
@@ -17561,6 +17579,7 @@ def test_object_checksum_xxhash128():
     assert error_code == 'BadDigest'
 
 @pytest.mark.checksum
+@pytest.mark.fails_on_s3proxy
 def test_object_checksum_md5():
     bucket = get_new_bucket()
     client = get_client()
@@ -23891,6 +23910,7 @@ def test_lifecycle_transition_encrypted(source_mode_key, source_storage_class, d
     _test_lifecycle_transition(source_mode_key, source_storage_class, dest_storage_class)
 
 
+@pytest.mark.fails_on_s3proxy
 def test_cors_presigned_url_non_preflight():
     client = get_client()
     bucket_name = _setup_bucket_acl(bucket_acl='public-read')
