@@ -16763,34 +16763,42 @@ def _test_put_bucket_encryption_malformed(rules):
 _sse_s3_by_default = '<ApplyServerSideEncryptionByDefault><SSEAlgorithm>AES256</SSEAlgorithm></ApplyServerSideEncryptionByDefault>'
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_missing_rule():
     _test_put_bucket_encryption_malformed('')
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_missing_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><ApplyServerSideEncryptionByDefault><KMSMasterKeyID>testkey-1</KMSMasterKeyID></ApplyServerSideEncryptionByDefault></Rule>')
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_misspelled_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><ApplyServerSideEncryptionByDefault><SseAlgorithm>AES256</SseAlgorithm></ApplyServerSideEncryptionByDefault></Rule>')
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_misplaced_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><SSEAlgorithm>AES256</SSEAlgorithm></Rule>')
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_misspelled_rule():
     _test_put_bucket_encryption_malformed('<Rules>' + _sse_s3_by_default + '</Rules>')
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_misspelled_blocked_encryption_types():
     _test_put_bucket_encryption_malformed('<Rule>' + _sse_s3_by_default + '<BlockedEncryptionType><EncryptionType>SSE-C</EncryptionType></BlockedEncryptionType></Rule>')
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_misspelled_encryption_type():
     _test_put_bucket_encryption_malformed('<Rule><BlockedEncryptionTypes><EncryptionTypes>SSE-C</EncryptionTypes></BlockedEncryptionTypes></Rule>')
 
 @pytest.mark.bucket_encryption
+@pytest.mark.sse_s3
 def test_put_bucket_encryption_two_rules():
     _test_put_bucket_encryption_malformed('<Rule>' + _sse_s3_by_default + '</Rule><Rule><BlockedEncryptionTypes><EncryptionType>SSE-C</EncryptionType></BlockedEncryptionTypes></Rule>')
 
