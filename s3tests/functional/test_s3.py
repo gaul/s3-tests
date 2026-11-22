@@ -16115,9 +16115,8 @@ def test_object_lock_copy_does_not_inherit_retention():
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
 # MiniStack's CopyObject gives the copy the source's lock, here none,
-# rather than the destination's default retention.  It is the code
-# behind ministackorg/ministack#2771, which reports only the inherited
-# lock; this half is not reported.
+# rather than the destination's default retention,
+# ministackorg/ministack#2780
 @pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_copy_into_default_retention_bucket():
     src_bucket = get_new_bucket_name()
