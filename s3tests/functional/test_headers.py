@@ -671,7 +671,6 @@ def test_sigv4_xamz_good():
     assert(resp.status_code == 200)
 
 @pytest.mark.auth_aws4
-@pytest.mark.fails_on_s3proxy
 def test_sigv4_xamz_bad():
     signer = _get_s3sigv4_signer()
     req = AWSRequest(
@@ -778,7 +777,6 @@ def test_sigv4_xgoog_signed():
     assert(resp.status_code == 200)
 
 @pytest.mark.auth_aws4
-@pytest.mark.fails_on_s3proxy
 def test_sigv4_presigned_xamz_bad():
     signer = _get_s3sigv4_query_signer()
     req = AWSRequest(method="GET", url=get_config_endpoint() + "/")
@@ -799,7 +797,6 @@ def test_sigv4_presigned_contenttype_unsigned():
     assert(resp.status_code == 200)
 
 @pytest.mark.auth_aws4
-@pytest.mark.fails_on_s3proxy
 def test_sigv4_presigned_contenttype_plus_xamz_bad():
     # ...but an unsigned x-amz- header sitting alongside an unsigned
     # content-type still has to be rejected. Thats the combination a careless
