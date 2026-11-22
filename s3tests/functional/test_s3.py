@@ -16182,12 +16182,9 @@ def test_copy_object_ifnonematch_failed():
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
-# s3proxy judges these on the stores it can and on aws-s3 hands them to the
-# service; the other backends refuse a conditional copy rather than ignore
-# the condition.  The emulators behind aws-s3 do not take every form here.
-@pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_localstack
+# swift refuses a conditional copy rather than ignore the condition, and
+# MiniStack ignores it.  The LocalStack lane deselects this by name: its
+# refused copy still overwrites the destination of an unversioned bucket.
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 def test_copy_object_dest_if_match(versioning, size):
@@ -16233,11 +16230,11 @@ def test_copy_object_dest_if_match(versioning, size):
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
-# s3proxy judges these on the stores it can and on aws-s3 hands them to the
-# service; the other backends refuse a conditional copy rather than ignore
-# the condition.  The emulators behind aws-s3 do not take every form here.
+# This expects a copy to carry its source's ETag, which Azure mints per
+# blob, and an If-None-Match naming an ETag, which S3 and so LocalStack
+# answer NotImplemented.  swift refuses a conditional copy and MiniStack
+# ignores the condition.
 @pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
