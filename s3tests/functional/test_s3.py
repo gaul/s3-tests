@@ -1615,6 +1615,9 @@ def test_bucket_list_return_data_versioning():
         assert obj['IsLatest'] == True
         _compare_dates(obj['LastModified'],key_data['LastModified'])
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_bucket_list_objects_anonymous():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1624,6 +1627,9 @@ def test_bucket_list_objects_anonymous():
     unauthenticated_client.list_objects(Bucket=bucket_name)
 
 @pytest.mark.list_objects_v2
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_bucket_listv2_objects_anonymous():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -1714,6 +1720,9 @@ def _do_wait_completion(t):
     for thr in t:
         thr.join()
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_bucket_concurrent_set_canned_acl():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -2110,6 +2119,9 @@ def _get_post_url(bucket_name):
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_post_object_anonymous_request():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2164,6 +2176,9 @@ def test_post_object_authenticated_request():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_post_object_authenticated_no_content_type():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2203,6 +2218,9 @@ def test_post_object_authenticated_no_content_type():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_post_object_authenticated_request_bad_access_key():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2240,6 +2258,9 @@ def test_post_object_authenticated_request_bad_access_key():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_post_object_set_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2257,6 +2278,9 @@ def test_post_object_set_success_code():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_post_object_set_invalid_success_code():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -2454,6 +2478,9 @@ def test_post_object_escaped_field_values():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_post_object_success_redirect_action():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -3503,6 +3530,9 @@ def _setup_bucket_acl(bucket_acl=None):
 
     return bucket_name
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
 
@@ -3514,6 +3544,9 @@ def test_object_raw_get():
 # leaves versions behind and DeleteBucket answers BucketNotEmpty, as S3 does
 # for a versioned bucket
 @pytest.mark.fails_on_s3proxy_azureblob_versioning
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_bucket_gone():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3532,6 +3565,9 @@ def test_object_raw_get_bucket_gone():
 # leaves versions behind and DeleteBucket answers BucketNotEmpty, as S3 does
 # for a versioned bucket
 @pytest.mark.fails_on_s3proxy_azureblob_versioning
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_delete_key_bucket_gone():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3546,6 +3582,9 @@ def test_object_delete_key_bucket_gone():
     assert status == 404
     assert error_code == 'NoSuchBucket'
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_object_gone():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3604,6 +3643,9 @@ def test_bucket_head_extended():
 # Swift has no per-object ACLs, so an object cannot be public while its
 # container is private; anonymous access follows the container.
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_bucket_acl():
     bucket_name = _setup_bucket_object_acl('private', 'public-read')
 
@@ -3615,6 +3657,9 @@ def test_object_raw_get_bucket_acl():
 # Swift has no per-object ACLs, so an object cannot be private while its
 # container is public-read; anonymous access follows the container.
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_object_acl():
     bucket_name = _setup_bucket_object_acl('public-read', 'private')
 
@@ -3630,6 +3675,9 @@ def test_object_raw_get_object_acl():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_put_acl_mtime():
     key = 'foo'
     bucket_name = get_new_bucket()
@@ -3667,6 +3715,9 @@ def test_object_put_acl_mtime():
     obj_list = response['Versions'][0]
     _compare_dates(obj_list['LastModified'],create_mtime)
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_authenticated():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
 
@@ -3687,6 +3738,9 @@ def test_object_raw_response_headers():
     assert response['ResponseMetadata']['HTTPHeaders']['content-encoding'] == 'aaa'
     assert response['ResponseMetadata']['HTTPHeaders']['cache-control'] == 'no-cache'
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_authenticated_bucket_acl():
     bucket_name = _setup_bucket_object_acl('private', 'public-read')
 
@@ -3694,6 +3748,9 @@ def test_object_raw_authenticated_bucket_acl():
     response = client.get_object(Bucket=bucket_name, Key='foo')
     assert response['ResponseMetadata']['HTTPStatusCode'] == 200
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_authenticated_object_acl():
     bucket_name = _setup_bucket_object_acl('public-read', 'private')
 
@@ -3705,6 +3762,9 @@ def test_object_raw_authenticated_object_acl():
 # leaves versions behind and DeleteBucket answers BucketNotEmpty, as S3 does
 # for a versioned bucket
 @pytest.mark.fails_on_s3proxy_azureblob_versioning
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_authenticated_bucket_gone():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3717,6 +3777,9 @@ def test_object_raw_authenticated_bucket_gone():
     assert status == 404
     assert error_code == 'NoSuchBucket'
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_authenticated_object_gone():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3740,12 +3803,21 @@ def _test_object_raw_get_x_amz_expires_not_expired(client):
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
     assert res['status_code'] == 200
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_x_amz_expires_not_expired():
     _test_object_raw_get_x_amz_expires_not_expired(client=get_client())
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_x_amz_expires_not_expired_tenant():
     _test_object_raw_get_x_amz_expires_not_expired(client=get_tenant_client())
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_x_amz_expires_out_range_zero():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3756,6 +3828,9 @@ def test_object_raw_get_x_amz_expires_out_range_zero():
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
     assert res['status_code'] == 403
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_x_amz_expires_out_max_range():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3766,6 +3841,9 @@ def test_object_raw_get_x_amz_expires_out_max_range():
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
     assert res['status_code'] == 403
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_raw_get_x_amz_expires_out_positive_range():
     bucket_name = _setup_bucket_object_acl('public-read', 'public-read')
     client = get_client()
@@ -3824,6 +3902,9 @@ def test_object_anon_put():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_anon_put_write_access():
     bucket_name = _setup_bucket_acl('public-read-write')
     client = get_client()
@@ -4219,6 +4300,9 @@ def test_bucket_acl_default():
         )
 
 @pytest.mark.fails_on_aws
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_bucket_acl_canned_during_create():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4251,6 +4335,9 @@ def test_bucket_acl_canned_during_create():
             ],
         )
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_bucket_acl_canned():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4303,6 +4390,9 @@ def test_bucket_acl_canned():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_bucket_acl_canned_publicreadwrite():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -4375,6 +4465,9 @@ def test_bucket_acl_canned_authenticatedread():
             ],
         )
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_acl_grant_group_read():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4438,6 +4531,9 @@ def test_object_acl_default():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_acl_canned_during_create():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4474,6 +4570,9 @@ def test_object_acl_canned_during_create():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_acl_canned():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4770,6 +4869,9 @@ def test_object_acl_full_control_verify_attributes():
     assert content_type == response['ContentType']
     assert etag == response['ETag']
 
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_bucket_acl_canned_private_to_private():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -4841,6 +4943,9 @@ def _check_object_acl(permission):
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_acl():
     _check_object_acl('FULL_CONTROL')
 
@@ -6006,6 +6111,9 @@ def test_object_copy_not_owned_object_bucket():
 # Azure and Swift have no per-blob ACLs (Quirks.NO_BLOB_ACCESS_CONTROL)
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_copy_canned_acl():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -8971,6 +9079,9 @@ def test_versioning_multi_object_delete_with_marker_create():
 # Azure grants read at the container, so a per-object public-read ACL,
 # of a version or the current object, has nowhere to live
 @pytest.mark.fails_on_s3proxy_azureblob
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_versioned_object_acl():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -9043,6 +9154,9 @@ def test_versioned_object_acl():
 # Azure grants read at the container, so a per-object public-read ACL,
 # of a version or the current object, has nowhere to live
 @pytest.mark.fails_on_s3proxy_azureblob
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_versioned_object_acl_no_version_specified():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -12668,9 +12782,11 @@ def test_sse_kms_present():
     assert body == data
 
 @pytest.mark.encryption
-# LocalStack encrypts under the account's own key when the request names
-# none, the way AWS documents; this test wants the refusal rgw answers.
+# LocalStack and MiniStack encrypt under the account's own key when the
+# request names none, the way AWS documents; this test wants the refusal rgw
+# answers.
 @pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_sse_kms_no_key():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -14921,6 +15037,7 @@ def test_object_lock_put_obj_lock_with_days_and_years():
 # s3proxy refuses the period as S3 does, InvalidArgument; this expects the
 # code RGW has for it
 @pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_put_obj_lock_invalid_days():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -14942,6 +15059,7 @@ def test_object_lock_put_obj_lock_invalid_days():
 @pytest.mark.fails_on_dbstore
 # as for the days above
 @pytest.mark.fails_on_s3proxy_localstack
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_put_obj_lock_invalid_years():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -15011,6 +15129,9 @@ def test_object_lock_put_obj_lock_invalid_status():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
+# MiniStack lets versioning be suspended on a bucket with object lock,
+# ministackorg/ministack#2773
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_suspend_versioning():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -15274,6 +15395,9 @@ def test_object_lock_delete_object_with_retention():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+# MiniStack drops the retention a CreateMultipartUpload names, so the
+# completed object can be deleted, ministackorg/ministack#2772
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_delete_multipart_object_with_retention():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -15486,6 +15610,9 @@ def test_object_lock_delete_object_with_legal_hold_on():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
+# MiniStack drops the legal hold a CreateMultipartUpload names, so the
+# completed object can be deleted, ministackorg/ministack#2772
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_delete_multipart_object_with_legal_hold_on():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -15987,6 +16114,11 @@ def test_object_lock_copy_does_not_inherit_retention():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
+# MiniStack's CopyObject gives the copy the source's lock, here none,
+# rather than the destination's default retention.  It is the code
+# behind ministackorg/ministack#2771, which reports only the inherited
+# lock; this half is not reported.
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_copy_into_default_retention_bucket():
     src_bucket = get_new_bucket_name()
     dst_bucket = get_new_bucket_name()
@@ -16012,6 +16144,9 @@ def test_object_lock_copy_into_default_retention_bucket():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
+# MiniStack drops the retention a CreateMultipartUpload names,
+# ministackorg/ministack#2772
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_multipart_with_compliance_retention():
     bucket_name = get_new_bucket_name()
     client = get_client()

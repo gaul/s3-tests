@@ -338,6 +338,9 @@ def test_bucket_create_contentlength_none():
 # Swift has no per-object ACLs (access is container-level via X-Container-Read/
 # Write), so the openstack-swift backend cannot implement PutObjectAcl.
 @pytest.mark.fails_on_s3proxy_swift
+# MiniStack, like S3 since 2023, creates buckets with ACLs disabled and
+# refuses the ACL this test sets
+@pytest.mark.fails_on_s3proxy_ministack
 def test_object_acl_create_contentlength_none():
     bucket_name = get_new_bucket()
     client = get_client()
