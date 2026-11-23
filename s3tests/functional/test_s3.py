@@ -15129,9 +15129,6 @@ def test_object_lock_put_obj_lock_invalid_status():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
-# MiniStack lets versioning be suspended on a bucket with object lock,
-# ministackorg/ministack#2773
-@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_suspend_versioning():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -15395,9 +15392,6 @@ def test_object_lock_delete_object_with_retention():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
-# MiniStack drops the retention a CreateMultipartUpload names, so the
-# completed object can be deleted, ministackorg/ministack#2772
-@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_delete_multipart_object_with_retention():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -15610,9 +15604,6 @@ def test_object_lock_delete_object_with_legal_hold_on():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_dbstore
 @pytest.mark.multipart
-# MiniStack drops the legal hold a CreateMultipartUpload names, so the
-# completed object can be deleted, ministackorg/ministack#2772
-@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_delete_multipart_object_with_legal_hold_on():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -16114,10 +16105,6 @@ def test_object_lock_copy_does_not_inherit_retention():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
-# MiniStack's CopyObject gives the copy the source's lock, here none,
-# rather than the destination's default retention,
-# ministackorg/ministack#2780
-@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_copy_into_default_retention_bucket():
     src_bucket = get_new_bucket_name()
     dst_bucket = get_new_bucket_name()
@@ -16143,9 +16130,6 @@ def test_object_lock_copy_into_default_retention_bucket():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
-# MiniStack drops the retention a CreateMultipartUpload names,
-# ministackorg/ministack#2772
-@pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_multipart_with_compliance_retention():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -16327,10 +16311,9 @@ def test_copy_object_ifnonematch_failed():
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
-# swift refuses a conditional copy rather than ignore the condition, and
-# MiniStack ignores it.  The LocalStack lane deselects this by name: its
-# refused copy still overwrites the destination of an unversioned bucket.
-@pytest.mark.fails_on_s3proxy_ministack
+# swift refuses a conditional copy rather than ignore the condition.  The
+# LocalStack lane deselects this by name: its refused copy still
+# overwrites the destination of an unversioned bucket.
 @pytest.mark.fails_on_s3proxy_swift
 def test_copy_object_dest_if_match(versioning, size):
     client = get_client()
@@ -16376,9 +16359,9 @@ def test_copy_object_dest_if_match(versioning, size):
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
 # This expects a copy to carry its source's ETag, which Azure mints per
-# blob, and an If-None-Match naming an ETag, which S3 and so LocalStack
-# answer NotImplemented.  swift refuses a conditional copy and MiniStack
-# ignores the condition.
+# blob, and an If-None-Match naming an ETag, which S3 answers
+# NotImplemented, as LocalStack and MiniStack do.  swift refuses a
+# conditional copy.
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_ministack
