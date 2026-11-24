@@ -17892,6 +17892,7 @@ def test_multipart_checksum_sha256():
 # reconstruct from a completed upload.
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
+@pytest.mark.fails_on_s3proxy_swift
 def test_multipart_reupload_checksum_and_etag():
     bucket = get_new_bucket()
     client = get_client()
