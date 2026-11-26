@@ -8163,6 +8163,10 @@ class ActionOnCount:
             self.result = self.action()
 
 @pytest.mark.multipart
+# The completion lists part 1 twice and expects the later entry to win, as
+# rgw does.  s3proxy refuses a part list that is not strictly ascending
+# with InvalidPartOrder, as AWS answered [1,1], [1,1,2] and [1,2,2].
+@pytest.mark.fails_on_s3proxy
 def test_multipart_resend_first_finishes_last():
     bucket_name = get_new_bucket()
     client = get_client()
