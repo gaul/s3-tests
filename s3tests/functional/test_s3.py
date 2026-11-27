@@ -314,7 +314,6 @@ def validate_bucket_listv2(bucket_name, prefix, delimiter, continuation_token, m
     return response['NextContinuationToken']
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_list_delimiter_prefix():
     bucket_name = _create_objects(keys=['asdf', 'boo/bar', 'boo/baz/xyzzy', 'cquux/thud', 'cquux/bla'])
 
@@ -407,7 +406,6 @@ def test_bucket_listv2_delimiter_alt():
     assert prefixes == ['ba', 'ca']
 
 @pytest.mark.fails_on_dbstore
-@pytest.mark.fails_on_s3proxy_localstack
 def test_bucket_list_delimiter_prefix_underscore():
     bucket_name = _create_objects(keys=['_obj1_','_under1/bar', '_under1/baz/xyzzy', '_under2/thud', '_under2/bla'])
 
@@ -1815,9 +1813,7 @@ def _make_objs_dict(key_names):
     return objs_dict
 
 # re-creating a bucket you own answers 200 in S3's us-east-1 and
-# BucketAlreadyOwnedByYou in s3proxy.  On the LocalStack lane the outcome
-# depends on whether the threads overlap, so run-s3-tests.sh deselects it
-# there rather than expecting either result.
+# BucketAlreadyOwnedByYou in s3proxy.
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.versioning
 @pytest.mark.fails_on_s3proxy_gcs
@@ -3243,8 +3239,6 @@ def test_get_object_ifmatch_failed():
     assert status == 412
     assert error_code == 'PreconditionFailed'
 
-# localstack returns no etag with 304 responses
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_azureblob
 def test_get_object_ifnonematch_good():
     bucket_name = get_new_bucket()
@@ -3276,8 +3270,6 @@ def test_get_object_ifmodifiedsince_good():
     body = _get_body(response)
     assert body == 'bar'
 
-# localstack returns no etag with 304 responses
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_dbstore
 @pytest.mark.fails_on_s3proxy_azureblob
 def test_get_object_ifmodifiedsince_failed():
@@ -3418,8 +3410,6 @@ def test_put_object_ifmatch_nonexisted_failed():
     assert error_code == 'NoSuchKey'
 
 @pytest.mark.fails_on_aws
-# LocalStack refuses a named If-None-Match as unimplemented, as AWS does
-@pytest.mark.fails_on_s3proxy_localstack
 # s3proxy answers a conditional write NotImplemented on Swift, whose only
 # native form is If-None-Match: *.  Emulating the rest means a HEAD then an
 # unconditional write, which is not the guarantee the caller asked for.
@@ -3442,8 +3432,6 @@ def test_put_object_ifnonmatch_good():
 
 @pytest.mark.fails_on_aws
 @pytest.mark.fails_on_dbstore
-# LocalStack refuses a named If-None-Match as unimplemented, as AWS does
-@pytest.mark.fails_on_s3proxy_localstack
 # s3proxy answers a conditional write NotImplemented on Swift, whose only
 # native form is If-None-Match: *.  Emulating the rest means a HEAD then an
 # unconditional write, which is not the guarantee the caller asked for.
@@ -9025,7 +9013,6 @@ def test_versioning_multi_object_delete_last_missing():
 @pytest.mark.versioning
 @pytest.mark.fails_on_s3proxy_azureblob_versioning
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses a condition naming a version, as S3 does outside
 # directory buckets, and since s3proxy sends these one key at a time the
 # refusal fails the whole request
@@ -12246,8 +12233,7 @@ def test_encryption_sse_c_present():
 
 @pytest.mark.encryption
 # The 400 asserted here is radosgw's: AWS answers a wrong-key read with
-# 403 AccessDenied, and LocalStack and MiniStack follow it.
-@pytest.mark.fails_on_s3proxy_localstack
+# 403 AccessDenied, and MiniStack follows it.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_encryption_sse_c_other_key():
     bucket_name = get_new_bucket()
@@ -12548,8 +12534,7 @@ def test_encryption_sse_c_multipart_invalid_chunks_2():
 @pytest.mark.multipart
 @pytest.mark.fails_on_s3proxy_azureblob
 # The 400 asserted here is radosgw's: AWS answers a wrong-key read with
-# 403 AccessDenied, and LocalStack and MiniStack follow it.
-@pytest.mark.fails_on_s3proxy_localstack
+# 403 AccessDenied, and MiniStack follows it.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_encryption_sse_c_multipart_bad_download():
     bucket_name = get_new_bucket()
@@ -12789,10 +12774,8 @@ def test_sse_kms_present():
     assert body == data
 
 @pytest.mark.encryption
-# LocalStack and MiniStack encrypt under the account's own key when the
-# request names none, the way AWS documents; this test wants the refusal rgw
-# answers.
-@pytest.mark.fails_on_s3proxy_localstack
+# MiniStack encrypts under the account's own key when the request names
+# none, the way AWS documents; this test wants the refusal rgw answers.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_sse_kms_no_key():
     bucket_name = get_new_bucket()
@@ -13960,9 +13943,6 @@ def test_versioning_bucket_atomic_upload_return_version_id():
     assert not 'VersionId' in response
 
 @pytest.mark.multipart
-# LocalStack names the null version in the completion of an upload to a
-# suspended bucket; S3 names no version there
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 # the Suspended arm: GCS versioning is on or off, so the
 # google-cloud-storage backend refuses Suspended with NotImplemented
@@ -15043,7 +15023,6 @@ def test_object_lock_put_obj_lock_with_days_and_years():
 @pytest.mark.fails_on_dbstore
 # s3proxy refuses the period as S3 does, InvalidArgument; this expects the
 # code RGW has for it
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_put_obj_lock_invalid_days():
     bucket_name = get_new_bucket_name()
@@ -15065,7 +15044,6 @@ def test_object_lock_put_obj_lock_invalid_days():
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
 # as for the days above
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_ministack
 def test_object_lock_put_obj_lock_invalid_years():
     bucket_name = get_new_bucket_name()
@@ -15700,9 +15678,6 @@ def test_object_lock_changing_mode_from_governance_with_bypass():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
-# LocalStack lets a GOVERNANCE retention become COMPLIANCE without the
-# bypass
-@pytest.mark.fails_on_s3proxy_localstack
 def test_object_lock_changing_mode_from_governance_without_bypass():
     bucket_name = get_new_bucket_name()
     key = 'file1'
@@ -15857,9 +15832,6 @@ def test_object_lock_compliance_retention_expiry():
 
 @pytest.mark.object_lock
 @pytest.mark.fails_on_dbstore
-# S3 lets a caller with the bypass remove a GOVERNANCE retention by putting
-# an empty one, and s3proxy hands it on; this expects RGW's refusal
-@pytest.mark.fails_on_s3proxy_localstack
 def test_object_lock_put_obj_retention_remove():
     bucket_name = get_new_bucket_name()
     client = get_client()
@@ -16318,9 +16290,7 @@ def test_copy_object_ifnonematch_failed():
 @pytest.mark.parametrize('versioning', [None,
     pytest.param('Enabled', marks=pytest.mark.versioning)])
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
-# swift refuses a conditional copy rather than ignore the condition.  The
-# LocalStack lane deselects this by name: its refused copy still
-# overwrites the destination of an unversioned bucket.
+# swift refuses a conditional copy rather than ignore the condition.
 @pytest.mark.fails_on_s3proxy_swift
 def test_copy_object_dest_if_match(versioning, size):
     client = get_client()
@@ -16367,10 +16337,9 @@ def test_copy_object_dest_if_match(versioning, size):
 @pytest.mark.parametrize('size', [1, 5*1024*1024])
 # This expects a copy to carry its source's ETag, which Azure mints per
 # blob, and an If-None-Match naming an ETag, which S3 answers
-# NotImplemented, as LocalStack and MiniStack do.  swift refuses a
+# NotImplemented, as MiniStack does.  swift refuses a
 # conditional copy.
 @pytest.mark.fails_on_s3proxy_azureblob
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 def test_copy_object_dest_if_none_match(versioning, size):
@@ -16936,7 +16905,6 @@ _sse_s3_by_default = '<ApplyServerSideEncryptionByDefault><SSEAlgorithm>AES256</
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the configuration with MalformedXML, as S3 does, but
 # the 404 asserted after it never comes: as on S3, every bucket has a
 # default.
@@ -16946,7 +16914,6 @@ def test_put_bucket_encryption_missing_rule():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the configuration with MalformedXML, as S3 does, but
 # the 404 asserted after it never comes: as on S3, every bucket has a
 # default.
@@ -16956,7 +16923,6 @@ def test_put_bucket_encryption_missing_sse_algorithm():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the configuration with MalformedXML, as S3 does, but
 # the 404 asserted after it never comes: as on S3, every bucket has a
 # default.
@@ -16966,7 +16932,6 @@ def test_put_bucket_encryption_misspelled_sse_algorithm():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the configuration with MalformedXML, as S3 does, but
 # the 404 asserted after it never comes: as on S3, every bucket has a
 # default.
@@ -16976,7 +16941,6 @@ def test_put_bucket_encryption_misplaced_sse_algorithm():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the configuration with MalformedXML, as S3 does, but
 # the 404 asserted after it never comes: as on S3, every bucket has a
 # default.
@@ -16992,7 +16956,6 @@ def test_put_bucket_encryption_misspelled_blocked_encryption_types():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the configuration with MalformedXML, as S3 does, but
 # the 404 asserted after it never comes: as on S3, every bucket has a
 # default.
@@ -17002,7 +16965,6 @@ def test_put_bucket_encryption_misspelled_encryption_type():
 
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the configuration with MalformedXML, as S3 does, but
 # the 404 asserted after it never comes: as on S3, every bucket has a
 # default.
@@ -17012,9 +16974,6 @@ def test_put_bucket_encryption_two_rules():
 
 
 @pytest.mark.sse_s3
-# LocalStack buckets rest under an account-wide default the way modern AWS
-# ones do, so the fresh-bucket 404 asserted here never comes on that lane.
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack rests on the same account-wide default, so the fresh-bucket
 # 404 asserted here never comes on its lane either
 @pytest.mark.fails_on_s3proxy_ministack
@@ -17038,9 +16997,6 @@ def test_get_bucket_encryption_s3():
 
 
 @pytest.mark.encryption
-# LocalStack buckets rest under an account-wide default the way modern AWS
-# ones do, so the fresh-bucket 404 asserted here never comes on that lane.
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack rests on the same account-wide default, so the fresh-bucket
 # 404 asserted here never comes on its lane either
 @pytest.mark.fails_on_s3proxy_ministack
@@ -17068,9 +17024,6 @@ def test_get_bucket_encryption_kms():
 
 
 @pytest.mark.sse_s3
-# LocalStack answers the read after the delete with an empty configuration
-# rather than the 404 asserted here, resting on its account-wide default.
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack rests on the same account-wide default and answers the read
 # after the delete the same way
 @pytest.mark.fails_on_s3proxy_ministack
@@ -17096,9 +17049,6 @@ def test_delete_bucket_encryption_s3():
 
 
 @pytest.mark.encryption
-# LocalStack answers the read after the delete with an empty configuration
-# rather than the 404 asserted here, resting on its account-wide default.
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack rests on the same account-wide default and answers the read
 # after the delete the same way
 @pytest.mark.fails_on_s3proxy_ministack
@@ -22490,9 +22440,6 @@ def test_delete_marker_expiration():
 # Azure stamps a fresh ETag on every write, so the ETag captured up top no
 # longer matches the object by the time If-Match names it again.
 @pytest.mark.fails_on_s3proxy_azureblob
-# LocalStack answers If-None-Match with a specific ETag 501 NotImplemented; it
-# implements only the wildcard form.
-@pytest.mark.fails_on_s3proxy_localstack
 # s3proxy answers a conditional write NotImplemented on Swift, whose only
 # native form is If-None-Match: *.  Emulating the rest means a HEAD then an
 # unconditional write, which is not the guarantee the caller asked for.
@@ -22562,11 +22509,9 @@ def failing_conditional_multipart_upload(expected_failure, client, bucket, key, 
 # s3proxy hands a conditional completion to the store rather than checking it
 # beforehand, which would only hold while nothing else writes the same key.
 # Swift's manifest PUT honours only If-None-Match: *, so it cannot answer a
-# condition naming an ETag and s3proxy answers NotImplemented; LocalStack
-# answers the same, of its own accord.  GCS resolves the ETag to a
-# generation and pins the compose to it.
+# condition naming an ETag and s3proxy answers NotImplemented.  GCS resolves
+# the ETag to a generation and pins the compose to it.
 @pytest.mark.fails_on_s3proxy_swift
-@pytest.mark.fails_on_s3proxy_localstack
 def test_multipart_put_object_if_match():
     client = get_client()
     bucket = get_new_bucket(client)
@@ -22602,9 +22547,6 @@ def test_multipart_put_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
-# LocalStack answers a named If-None-Match with 501 as AWS does, where
-# this expects rgw's 412
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_put_current_object_if_none_match():
     client = get_client()
@@ -22635,9 +22577,6 @@ def test_put_current_object_if_none_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
-# LocalStack answers a named If-None-Match with 501 as AWS does, where
-# this expects rgw's 412
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_multipart_put_current_object_if_none_match():
     client = get_client()
@@ -22666,9 +22605,6 @@ def test_multipart_put_current_object_if_none_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
-# LocalStack answers a named If-None-Match with 501 as AWS does, where
-# this expects rgw's 412
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_put_current_object_if_match():
     client = get_client()
@@ -22701,9 +22637,6 @@ def test_put_current_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
-# LocalStack answers a named If-None-Match with 501 as AWS does, where
-# this expects rgw's 412
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_multipart_put_current_object_if_match():
     client = get_client()
@@ -22732,9 +22665,6 @@ def test_multipart_put_current_object_if_match():
 
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
-# LocalStack answers a named If-None-Match with 501 as AWS does, where
-# this expects rgw's 412
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.versioning
 def test_put_object_current_if_match():
     client = get_client()
@@ -22817,9 +22747,6 @@ def test_multipart_put_object_suspended_if_none_match():
     assert 200 == response['ResponseMetadata']['HTTPStatusCode']
 
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete, answering
-# NotImplemented where these expect the precondition to fail
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
 # size and last-modified-time conditions and for any condition naming a
@@ -22858,12 +22785,11 @@ def test_delete_object_if_match():
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
 # enables versioning first, so it runs only on the lanes that version;
-# of those the nio2 store and the emulators behind the gcs, localstack and
+# of those the nio2 store and the emulators behind the gcs and
 # ministack lanes answer these conditions other than rgw does, and only the
 # versioned azureblob store passes
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.versioning
 def test_delete_object_current_if_match():
@@ -22900,13 +22826,12 @@ def test_delete_object_current_if_match():
 
 # These are not tagged versioning, so they run on every lane: the stores
 # without versioning refuse the bucket these begin by versioning, and
-# neither the google-cloud-storage backend nor LocalStack implements the
-# conditional delete, answering NotImplemented where these expect the
-# precondition to fail
+# the google-cloud-storage backend does not implement the conditional
+# delete, answering NotImplemented where these expect the precondition to
+# fail
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
 # size and last-modified-time conditions and for any condition naming a
@@ -22945,9 +22870,6 @@ def test_delete_object_version_if_match():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete, answering
-# NotImplemented where these expect the precondition to fail
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
 # size and last-modified-time conditions and for any condition naming a
@@ -23003,13 +22925,12 @@ def test_delete_object_current_if_match_last_modified_time():
 
 # These are not tagged versioning, so they run on every lane: the stores
 # without versioning refuse the bucket these begin by versioning, and
-# neither the google-cloud-storage backend nor LocalStack implements the
-# conditional delete, answering NotImplemented where these expect the
-# precondition to fail
+# the google-cloud-storage backend does not implement the conditional
+# delete, answering NotImplemented where these expect the precondition to
+# fail
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
 # size and last-modified-time conditions and for any condition naming a
@@ -23042,9 +22963,6 @@ def test_delete_object_version_if_match_last_modified_time():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete, answering
-# NotImplemented where these expect the precondition to fail
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
 # size and last-modified-time conditions and for any condition naming a
@@ -23099,13 +23017,12 @@ def test_delete_object_current_if_match_size():
 
 # These are not tagged versioning, so they run on every lane: the stores
 # without versioning refuse the bucket these begin by versioning, and
-# neither the google-cloud-storage backend nor LocalStack implements the
-# conditional delete, answering NotImplemented where these expect the
-# precondition to fail
+# the google-cloud-storage backend does not implement the conditional
+# delete, answering NotImplemented where these expect the precondition to
+# fail
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
 # size and last-modified-time conditions and for any condition naming a
@@ -23137,10 +23054,6 @@ def test_delete_object_version_if_match_size():
     assert 204 == response['ResponseMetadata']['HTTPStatusCode']
 
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete: asked for a batch
-# it ignores the condition and deletes anyway, and s3proxy sends these one
-# key at a time, which it refuses as unimplemented
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
@@ -23166,12 +23079,11 @@ def test_delete_objects_if_match():
 @pytest.mark.conditional_write
 @pytest.mark.fails_on_dbstore
 # enables versioning first, so it runs only on the lanes that version;
-# of those the nio2 store and the emulators behind the gcs, localstack and
+# of those the nio2 store and the emulators behind the gcs and
 # ministack lanes answer these conditions other than rgw does, and only the
 # versioned azureblob store passes
 @pytest.mark.fails_on_s3proxy_nio2
 @pytest.mark.fails_on_s3proxy_gcs
-@pytest.mark.fails_on_s3proxy_localstack
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.versioning
 def test_delete_objects_current_if_match():
@@ -23198,10 +23110,6 @@ def test_delete_objects_current_if_match():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete: asked for a batch
-# it ignores the condition and deletes anyway, and s3proxy sends these one
-# key at a time, which it refuses as unimplemented
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses a condition naming a version, as S3 does outside
 # directory buckets, and since s3proxy sends these one key at a time the
 # refusal fails the whole request
@@ -23233,10 +23141,6 @@ def test_delete_objects_version_if_match():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete: asked for a batch
-# it ignores the condition and deletes anyway, and s3proxy sends these one
-# key at a time, which it refuses as unimplemented
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the size and last-modified-time conditions, as S3
 # does outside directory buckets, and since s3proxy sends these one key
 # at a time the refusal fails the whole request
@@ -23296,10 +23200,6 @@ def test_delete_objects_current_if_match_last_modified_time():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete: asked for a batch
-# it ignores the condition and deletes anyway, and s3proxy sends these one
-# key at a time, which it refuses as unimplemented
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the size and last-modified-time conditions, as S3
 # does outside directory buckets, and since s3proxy sends these one key
 # at a time the refusal fails the whole request
@@ -23334,10 +23234,6 @@ def test_delete_objects_version_if_match_last_modified_time():
 
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete: asked for a batch
-# it ignores the condition and deletes anyway, and s3proxy sends these one
-# key at a time, which it refuses as unimplemented
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the size and last-modified-time conditions, as S3
 # does outside directory buckets, and since s3proxy sends these one key
 # at a time the refusal fails the whole request
@@ -23397,10 +23293,6 @@ def test_delete_objects_current_if_match_size():
 @pytest.mark.fails_on_s3proxy_azureblob
 @pytest.mark.fails_on_s3proxy_filesystem
 @pytest.mark.fails_on_s3proxy_gcs
-# LocalStack does not implement the conditional delete: asked for a batch
-# it ignores the condition and deletes anyway, and s3proxy sends these one
-# key at a time, which it refuses as unimplemented
-@pytest.mark.fails_on_s3proxy_localstack
 # MiniStack refuses the size and last-modified-time conditions, as S3
 # does outside directory buckets, and since s3proxy sends these one key
 # at a time the refusal fails the whole request
@@ -23969,10 +23861,6 @@ def generate_copy_part_enc_params():
         for dest_key in _copy_enc_dest_modes.keys():
             source_marks = _copy_enc_source_modes[source_key].get('marks', [])
             dest_marks = list(_copy_enc_dest_modes[dest_key].get('marks', []))
-            if dest_key == 'sse-c':
-                # LocalStack gates the parts of an SSE-C multipart upload
-                # but not the completion, which AWS also asks for the key.
-                dest_marks.append(pytest.mark.fails_on_s3proxy_localstack)
             for source_sc in sc:
                 for dest_sc in sc:
                     additional_marks = []

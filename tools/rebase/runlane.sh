@@ -5,7 +5,7 @@
 # usage: tools/rebase/runlane.sh LANE [PYTEST ARGS...]
 #
 # LANE is one of transient, filesystem, azurite, azurite-versioning,
-# fake-gcs-server, localstack, ministack, swift.  Run it from this checkout
+# fake-gcs-server, ministack, swift.  Run it from this checkout
 # while it is S3Proxy's s3-tests submodule, after "mvn package" has built
 # target/s3proxy.  The emulator versions are read from S3Proxy's CI
 # workflow so that a local run tests what CI tests.  Containers run under
@@ -76,15 +76,6 @@ azurite|azurite-versioning)
             --accountConfigAsJson "$account" > "$results/$lane.emulator.log" 2>&1) &
     emulator_pid=$!
     wait_url 'http://127.0.0.1:10000/devstoreaccount1?comp=list' || exit 1
-    ;;
-localstack)
-    container_name=s3tests-localstack
-    "$container" run -d --rm --name "$container_name" -p 4566:4566 \
-            "$(pinned localstack/localstack:)" >/dev/null || exit 1
-    for _ in $(seq 90); do
-        curl -s http://127.0.0.1:4566/_localstack/health | grep -q '"s3"' && break
-        sleep 1
-    done
     ;;
 ministack)
     container_name=s3tests-ministack

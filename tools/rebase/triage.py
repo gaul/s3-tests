@@ -22,9 +22,9 @@ import sys
 import xml.etree.ElementTree as ElementTree
 
 LANES = ['transient', 'filesystem', 'azurite', 'azurite-versioning',
-         'fake-gcs-server', 'localstack', 'ministack', 'swift']
-SINGLE = (('fake-gcs-server', 'gcs'), ('localstack', 'localstack'),
-          ('ministack', 'ministack'), ('swift', 'swift'))
+         'fake-gcs-server', 'ministack', 'swift']
+SINGLE = (('fake-gcs-server', 'gcs'), ('ministack', 'ministack'),
+          ('swift', 'swift'))
 
 
 def outcome(case):

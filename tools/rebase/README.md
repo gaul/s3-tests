@@ -72,7 +72,7 @@ while it is S3Proxy's `s3-tests` submodule.
 
    ```
    for lane in transient filesystem azurite azurite-versioning \
-           fake-gcs-server localstack ministack swift; do
+           fake-gcs-server ministack swift; do
        tools/rebase/runlane.sh $lane
    done
    python3 tools/rebase/triage.py lane-results --json plan.json

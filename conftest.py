@@ -43,7 +43,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--s3proxy-backend", action="store", default="", metavar="NAMES",
         help="backend under test: azureblob, azureblob_versioning, gcs,"
-             " localstack, nio2 or swift."
+             " ministack, nio2 or swift."
              " Its " + BACKEND_MARKER_PREFIX + "NAME marker becomes a strict"
              " expected failure, as " + COMMON_MARKER + " always does."
              " Accepts a comma-separated list, for a lane that is one"
