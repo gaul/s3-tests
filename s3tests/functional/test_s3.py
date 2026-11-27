@@ -9026,6 +9026,10 @@ def test_versioning_multi_object_delete_last_missing():
 @pytest.mark.fails_on_s3proxy_azureblob_versioning
 @pytest.mark.fails_on_s3proxy_gcs
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack refuses a condition naming a version, as S3 does outside
+# directory buckets, and since s3proxy sends these one key at a time the
+# refusal fails the whole request
+@pytest.mark.fails_on_s3proxy_ministack
 def test_versioning_multi_object_delete_last_precondition_failed():
     bucket_name = get_new_bucket()
     client = get_client()
@@ -16933,9 +16937,9 @@ _sse_s3_by_default = '<ApplyServerSideEncryptionByDefault><SSEAlgorithm>AES256</
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_s3proxy_localstack
-# MiniStack stores a malformed configuration where S3 answers
-# MalformedXML, ministackorg/ministack#2786.  The 404 asserted after it
-# would not come even then: as on S3, every bucket has a default.
+# MiniStack refuses the configuration with MalformedXML, as S3 does, but
+# the 404 asserted after it never comes: as on S3, every bucket has a
+# default.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_missing_rule():
     _test_put_bucket_encryption_malformed('')
@@ -16943,9 +16947,9 @@ def test_put_bucket_encryption_missing_rule():
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_s3proxy_localstack
-# MiniStack stores a malformed configuration where S3 answers
-# MalformedXML, ministackorg/ministack#2786.  The 404 asserted after it
-# would not come even then: as on S3, every bucket has a default.
+# MiniStack refuses the configuration with MalformedXML, as S3 does, but
+# the 404 asserted after it never comes: as on S3, every bucket has a
+# default.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_missing_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><ApplyServerSideEncryptionByDefault><KMSMasterKeyID>testkey-1</KMSMasterKeyID></ApplyServerSideEncryptionByDefault></Rule>')
@@ -16953,9 +16957,9 @@ def test_put_bucket_encryption_missing_sse_algorithm():
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_s3proxy_localstack
-# MiniStack stores a malformed configuration where S3 answers
-# MalformedXML, ministackorg/ministack#2786.  The 404 asserted after it
-# would not come even then: as on S3, every bucket has a default.
+# MiniStack refuses the configuration with MalformedXML, as S3 does, but
+# the 404 asserted after it never comes: as on S3, every bucket has a
+# default.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misspelled_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><ApplyServerSideEncryptionByDefault><SseAlgorithm>AES256</SseAlgorithm></ApplyServerSideEncryptionByDefault></Rule>')
@@ -16963,9 +16967,9 @@ def test_put_bucket_encryption_misspelled_sse_algorithm():
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_s3proxy_localstack
-# MiniStack stores a malformed configuration where S3 answers
-# MalformedXML, ministackorg/ministack#2786.  The 404 asserted after it
-# would not come even then: as on S3, every bucket has a default.
+# MiniStack refuses the configuration with MalformedXML, as S3 does, but
+# the 404 asserted after it never comes: as on S3, every bucket has a
+# default.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misplaced_sse_algorithm():
     _test_put_bucket_encryption_malformed('<Rule><SSEAlgorithm>AES256</SSEAlgorithm></Rule>')
@@ -16973,9 +16977,9 @@ def test_put_bucket_encryption_misplaced_sse_algorithm():
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_s3proxy_localstack
-# MiniStack stores a malformed configuration where S3 answers
-# MalformedXML, ministackorg/ministack#2786.  The 404 asserted after it
-# would not come even then: as on S3, every bucket has a default.
+# MiniStack refuses the configuration with MalformedXML, as S3 does, but
+# the 404 asserted after it never comes: as on S3, every bucket has a
+# default.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misspelled_rule():
     _test_put_bucket_encryption_malformed('<Rules>' + _sse_s3_by_default + '</Rules>')
@@ -16989,9 +16993,9 @@ def test_put_bucket_encryption_misspelled_blocked_encryption_types():
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_s3proxy_localstack
-# MiniStack stores a malformed configuration where S3 answers
-# MalformedXML, ministackorg/ministack#2786.  The 404 asserted after it
-# would not come even then: as on S3, every bucket has a default.
+# MiniStack refuses the configuration with MalformedXML, as S3 does, but
+# the 404 asserted after it never comes: as on S3, every bucket has a
+# default.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_misspelled_encryption_type():
     _test_put_bucket_encryption_malformed('<Rule><BlockedEncryptionTypes><EncryptionTypes>SSE-C</EncryptionTypes></BlockedEncryptionTypes></Rule>')
@@ -16999,9 +17003,9 @@ def test_put_bucket_encryption_misspelled_encryption_type():
 @pytest.mark.bucket_encryption
 @pytest.mark.sse_s3
 @pytest.mark.fails_on_s3proxy_localstack
-# MiniStack stores a malformed configuration where S3 answers
-# MalformedXML, ministackorg/ministack#2786.  The 404 asserted after it
-# would not come even then: as on S3, every bucket has a default.
+# MiniStack refuses the configuration with MalformedXML, as S3 does, but
+# the 404 asserted after it never comes: as on S3, every bucket has a
+# default.
 @pytest.mark.fails_on_s3proxy_ministack
 def test_put_bucket_encryption_two_rules():
     _test_put_bucket_encryption_malformed('<Rule>' + _sse_s3_by_default + '</Rule><Rule><BlockedEncryptionTypes><EncryptionType>SSE-C</EncryptionType></BlockedEncryptionTypes></Rule>')
@@ -22818,8 +22822,8 @@ def test_multipart_put_object_suspended_if_none_match():
 @pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
-# size and last-modified-time conditions, which S3 takes only on
-# directory buckets
+# size and last-modified-time conditions and for any condition naming a
+# version, which S3 takes only on directory buckets
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
@@ -22905,8 +22909,8 @@ def test_delete_object_current_if_match():
 @pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
-# size and last-modified-time conditions, which S3 takes only on
-# directory buckets
+# size and last-modified-time conditions and for any condition naming a
+# version, which S3 takes only on directory buckets
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
@@ -22946,8 +22950,8 @@ def test_delete_object_version_if_match():
 @pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
-# size and last-modified-time conditions, which S3 takes only on
-# directory buckets
+# size and last-modified-time conditions and for any condition naming a
+# version, which S3 takes only on directory buckets
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
@@ -23008,8 +23012,8 @@ def test_delete_object_current_if_match_last_modified_time():
 @pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
-# size and last-modified-time conditions, which S3 takes only on
-# directory buckets
+# size and last-modified-time conditions and for any condition naming a
+# version, which S3 takes only on directory buckets
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
@@ -23043,8 +23047,8 @@ def test_delete_object_version_if_match_last_modified_time():
 @pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
-# size and last-modified-time conditions, which S3 takes only on
-# directory buckets
+# size and last-modified-time conditions and for any condition naming a
+# version, which S3 takes only on directory buckets
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
@@ -23104,8 +23108,8 @@ def test_delete_object_current_if_match_size():
 @pytest.mark.fails_on_s3proxy_localstack
 # MiniStack answers these as S3 does: NoSuchKey for a conditional delete
 # of what is already gone, where rgw succeeds, and NotImplemented for the
-# size and last-modified-time conditions, which S3 takes only on
-# directory buckets
+# size and last-modified-time conditions and for any condition naming a
+# version, which S3 takes only on directory buckets
 @pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
@@ -23198,6 +23202,10 @@ def test_delete_objects_current_if_match():
 # it ignores the condition and deletes anyway, and s3proxy sends these one
 # key at a time, which it refuses as unimplemented
 @pytest.mark.fails_on_s3proxy_localstack
+# MiniStack refuses a condition naming a version, as S3 does outside
+# directory buckets, and since s3proxy sends these one key at a time the
+# refusal fails the whole request
+@pytest.mark.fails_on_s3proxy_ministack
 @pytest.mark.fails_on_s3proxy_swift
 @pytest.mark.fails_on_aws # only supported for directory buckets
 @pytest.mark.conditional_write
